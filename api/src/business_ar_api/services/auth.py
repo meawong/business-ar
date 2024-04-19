@@ -1,4 +1,4 @@
-# Copyright © 2023 Province of British Columbia
+# Copyright © 2024 Province of British Columbia
 #
 # Licensed under the BSD 3 Clause License, (the "License");
 # you may not use this file except in compliance with the License.
@@ -31,17 +31,34 @@
 # CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
-from flask import Blueprint
-from flask import jsonify
-from flask import request
+"""Manages Auth service interactions."""
+from flask import current_app
+
+from business_ar_api.services.rest_service import RestService
+from business_ar_api.utils.user_context import UserContext, user_context
 
 
-bp = Blueprint("base", __name__)
+class AuthService:
 
+    @classmethod
+    @user_context
+    def get_user_accounts(cls, **kwargs):
+        user: UserContext = kwargs["user_context"]
+        endpoint = f"{current_app.config.get('AUTH_API_URL')}/users/orgs"
+        user_account_details = RestService.get(
+            endpoint=endpoint, token=user.bearer_token
+        ).json()
+        return user_account_details
 
-@bp.route("/", methods=("GET",))
-def home():
-    if request.method == "POST":
-        return {}, 201
-
-    return jsonify(name="world")
+    @classmethod
+    @user_context
+    def create_user_account(cls, account_details: dict, **kwargs):
+        user: UserContext = kwargs["user_context"]
+        endpoint = f"{current_app.config.get('AUTH_API_URL')}/orgs"
+        new_user_account_details = RestService.post(
+            data=account_details,
+            endpoint=endpoint,
+            token=user.bearer_token,
+            generate_token=False,
+        ).json()
+        return new_user_account_details

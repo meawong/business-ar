@@ -1,4 +1,4 @@
-# Copyright © 2023 Province of British Columbia
+# Copyright © 2024 Province of British Columbia
 #
 # Licensed under the BSD 3 Clause License, (the "License");
 # you may not use this file except in compliance with the License.
@@ -31,24 +31,39 @@
 # CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
-"""Supply version and commit hash info.
+"""Core error handlers and custom exceptions."""
+import logging
+import sys
 
-When deployed in OKD, it adds the last commit hash onto the version info.
-"""
-import os
-from importlib.metadata import version
-
-
-def _get_commit_hash():
-    """Return the containers ref if present."""
-    if (commit_hash := os.getenv("VCS_REF", None)) and commit_hash != "missing":
-        return commit_hash
-    return None
+from flask import jsonify
+from werkzeug.exceptions import HTTPException
+from werkzeug.routing import RoutingException
 
 
-def get_run_version():
-    """Return a formatted version string for this service."""
-    ver = version(__name__[: __name__.find(".")])
-    if commit_hash := _get_commit_hash():
-        return f"{ver}-{commit_hash}"
-    return ver
+logger = logging.getLogger(__name__)
+
+
+def init_app(app):
+    """Initialize the error handlers for the Flask app instance."""
+    app.register_error_handler(HTTPException, handle_http_error)
+    app.register_error_handler(Exception, handle_uncaught_error)
+
+
+def handle_http_error(error):
+    """Handle HTTPExceptions."""
+    # As werkzeug's routing exceptions also inherit from HTTPException,
+    # check for those and allow them to return with redirect responses.
+    if isinstance(error, RoutingException):
+        return error
+
+    response = jsonify({"message": error.description})
+    response.status_code = error.code
+    return response
+
+
+def handle_uncaught_error(error: Exception):  # pylint: disable=unused-argument
+    """Handle any uncaught exceptions."""
+    logger.error("Uncaught exception", exc_info=sys.exc_info())
+    response = jsonify({"message": "Internal server error"})
+    response.status_code = 500
+    return response

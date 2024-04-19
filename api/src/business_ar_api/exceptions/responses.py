@@ -1,4 +1,4 @@
-# Copyright © 2023 Province of British Columbia
+# Copyright © 2024 Province of British Columbia
 #
 # Licensed under the BSD 3 Clause License, (the "License");
 # you may not use this file except in compliance with the License.
@@ -31,19 +31,31 @@
 # CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
-from flask import Flask
+"""Exception responses."""
+from http import HTTPStatus
 
-from .base import bp as base_endpoint
-from .org_api_keys import bp as org_api_keys_bp
+from flask import jsonify, current_app
+
+from .exceptions import BaseExceptionE
 
 
-def register_endpoints(app: Flask):
-    # Allow base route to match with, and without a trailing slash
-    app.url_map.strict_slashes = False
+def error_response(
+    message: str, http_status: HTTPStatus, errors: list[dict[str, str]] = None
+):
+    """Build generic request response with errors."""
+    return jsonify({"message": message, "details": errors or []}), http_status
 
-    app.register_blueprint(
-        url_prefix="/",
-        blueprint=base_endpoint,
-    )
 
-    app.register_blueprint(org_api_keys_bp)
+def exception_response(exception: BaseExceptionE):
+    """Build exception error response."""
+    current_app.logger.error(repr(exception))
+    try:
+        message = exception.message or "Error processing request."
+        detail = exception.error or repr(exception)
+        status_code = exception.status_code or HTTPStatus.INTERNAL_SERVER_ERROR
+    except Exception:  # noqa B902; Catch all scenario.
+        # uncaught exception
+        message = "Error processing request."
+        detail = repr(exception)
+        status_code = HTTPStatus.INTERNAL_SERVER_ERROR
+    return jsonify({"message": message, "detail": detail}), status_code

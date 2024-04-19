@@ -1,4 +1,4 @@
-# Copyright © 2023 Province of British Columbia
+# Copyright © 2024 Province of British Columbia
 #
 # Licensed under the BSD 3 Clause License, (the "License");
 # you may not use this file except in compliance with the License.
@@ -31,10 +31,17 @@
 # CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
-"""Bring in the common JWT Manager."""
-from flask_jwt_oidc import JwtManager
+from flask import Blueprint
+from flask import jsonify
+from flask import request
 
 
-jwt = (
-    JwtManager()
-)  # pylint: disable=invalid-name; lower case name as used by convention in most Flask apps
+bp = Blueprint("base", __name__)
+
+
+@bp.route("/", methods=("GET",))
+def home():
+    if request.method == "POST":
+        return {}, 201
+
+    return jsonify(name="world")

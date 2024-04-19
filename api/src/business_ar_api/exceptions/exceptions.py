@@ -1,4 +1,4 @@
-# Copyright © 2023 Province of British Columbia
+# Copyright © 2024 Province of British Columbia
 #
 # Licensed under the BSD 3 Clause License, (the "License");
 # you may not use this file except in compliance with the License.
@@ -31,39 +31,61 @@
 # CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
-"""Core error handlers and custom exceptions."""
-import logging
-import sys
 
-from flask import jsonify
-from werkzeug.exceptions import HTTPException
-from werkzeug.routing import RoutingException
+"""Application Specific Exceptions, to manage api errors."""
+
+from dataclasses import dataclass
+from http import HTTPStatus
 
 
-logger = logging.getLogger(__name__)
+@dataclass
+class BaseExceptionE(Exception):
+    """Base exception class for custom exceptions."""
+
+    error: str
+    message: str = None
+    status_code: HTTPStatus = None
 
 
-def init_app(app):
-    """Initialize the error handlers for the Flask app instance."""
-    app.register_error_handler(HTTPException, handle_http_error)
-    app.register_error_handler(Exception, handle_uncaught_error)
+@dataclass
+class AuthException(BaseExceptionE):
+    """Authorization/Authentication exception."""
+
+    def __post_init__(self):
+        """Return a valid AuthorizationException."""
+        self.error = f"{self.error}, {self.status_code}"
+        if not self.message:
+            self.message = "Unauthorized access."
+        if not self.status_code:
+            self.status_code = HTTPStatus.FORBIDDEN
 
 
-def handle_http_error(error):
-    """Handle HTTPExceptions."""
-    # As werkzeug's routing exceptions also inherit from HTTPException,
-    # check for those and allow them to return with redirect responses.
-    if isinstance(error, RoutingException):
-        return error
+@dataclass
+class BusinessException(BaseExceptionE):
+    """Business rules exception."""
 
-    response = jsonify({"message": error.description})
-    response.status_code = error.code
-    return response
+    def __post_init__(self):
+        """Return a valid BusinessException."""
+        if not self.message:
+            self.message = "Business exception."
 
 
-def handle_uncaught_error(error: Exception):  # pylint: disable=unused-argument
-    """Handle any uncaught exceptions."""
-    logger.error("Uncaught exception", exc_info=sys.exc_info())
-    response = jsonify({"message": "Internal server error"})
-    response.status_code = 500
-    return response
+@dataclass
+class DatabaseException(BaseExceptionE):
+    """Database insert/update exception."""
+
+    def __post_init__(self):
+        """Return a valid DatabaseException."""
+        self.message = "Database error while processing request."
+        self.status_code = HTTPStatus.INTERNAL_SERVER_ERROR
+
+
+@dataclass
+class ExternalServiceException(BaseExceptionE):
+    """3rd party service exception."""
+
+    def __post_init__(self):
+        """Return a valid ExternalServiceException."""
+        self.message = "3rd party service error while processing request."
+        self.error = f"{repr(self.error)}, {self.status_code}"
+        self.status_code = HTTPStatus.SERVICE_UNAVAILABLE
