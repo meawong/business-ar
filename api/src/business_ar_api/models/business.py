@@ -31,61 +31,43 @@
 # CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
+"""This manages data about a business."""
 
-"""Application Specific Exceptions, to manage api errors."""
-
-from dataclasses import dataclass
-from http import HTTPStatus
-
-
-@dataclass
-class BaseExceptionE(Exception):
-    """Base exception class for custom exceptions."""
-
-    error: str
-    message: str = None
-    status_code: HTTPStatus = None
+from .base_model import BaseModel
+from .db import db
 
 
-@dataclass
-class AuthException(BaseExceptionE):
-    """Authorization/Authentication exception."""
+class Business(BaseModel):
+    id = db.Column(db.Integer, primary_key=True)
+    legal_name = db.Column("legal_name", db.String(1000), index=True)
+    legal_type = db.Column("legal_type", db.String(10))
+    identifier = db.Column("identifier", db.String(10), index=True)
+    tax_id = db.Column("tax_id", db.String(15), index=True)
+    nano_id = db.Column("nano_id", db.String(25), index=True)
 
-    def __post_init__(self):
-        """Return a valid AuthorizationException."""
-        self.error = f"{self.error}, {self.status_code}"
-        if not self.message:
-            self.message = "Unauthorized access."
-        if not self.status_code:
-            self.status_code = HTTPStatus.FORBIDDEN
+    @classmethod
+    def find_by_nano_id(cls, nano_id: str):
+        """Return a Business by the nano_id."""
+        business = None
+        if nano_id:
+            business = cls.query.filter_by(nano_id=nano_id).one_or_none()
+        return business
 
+    @classmethod
+    def find_by_identifier(cls, identifier: str):
+        """Return a Business by identifier."""
+        business = None
+        if identifier:
+            business = cls.query.filter_by(identifier=identifier).one_or_none()
+        return business
 
-@dataclass
-class BusinessException(BaseExceptionE):
-    """Business rules exception."""
+    def json(self):
+        """Return the business json."""
+        business_json = {
+            "legalName": self.legal_name,
+            "legalType": self.legal_type,
+            "identifier": self.identifier,
+            "taxId": self.tax_id,
+        }
 
-    def __post_init__(self):
-        """Return a valid BusinessException."""
-        if not self.message:
-            self.message = "Business exception."
-
-
-@dataclass
-class DatabaseException(BaseExceptionE):
-    """Database insert/update exception."""
-
-    def __post_init__(self):
-        """Return a valid DatabaseException."""
-        self.message = "Database error while processing request."
-        self.status_code = HTTPStatus.INTERNAL_SERVER_ERROR
-
-
-@dataclass
-class ExternalServiceException(BaseExceptionE):
-    """3rd party service exception."""
-
-    def __post_init__(self):
-        """Return a valid ExternalServiceException."""
-        self.message = "3rd party service error while processing request."
-        self.error = f"{repr(self.error)}, {self.status_code}"
-        self.status_code = HTTPStatus.INTERNAL_SERVER_ERROR
+        return business_json

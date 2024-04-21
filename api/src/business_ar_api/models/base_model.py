@@ -31,61 +31,50 @@
 # CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
+"""Base Model."""
 
-"""Application Specific Exceptions, to manage api errors."""
-
-from dataclasses import dataclass
-from http import HTTPStatus
+from .db import db
 
 
-@dataclass
-class BaseExceptionE(Exception):
-    """Base exception class for custom exceptions."""
+class BaseModel(db.Model):
+    __abstract__ = True
 
-    error: str
-    message: str = None
-    status_code: HTTPStatus = None
+    @staticmethod
+    def commit():
+        """Commit the session."""
+        db.session.commit()
 
+    def flush(self):
+        """Save and flush."""
+        db.session.add(self)
+        db.session.flush()
+        return self
 
-@dataclass
-class AuthException(BaseExceptionE):
-    """Authorization/Authentication exception."""
+    def add_to_session(self):
+        """Save and flush."""
+        return self.flush()
 
-    def __post_init__(self):
-        """Return a valid AuthorizationException."""
-        self.error = f"{self.error}, {self.status_code}"
-        if not self.message:
-            self.message = "Unauthorized access."
-        if not self.status_code:
-            self.status_code = HTTPStatus.FORBIDDEN
+    def save(self):
+        """Save and commit."""
+        db.session.add(self)
+        db.session.flush()
+        db.session.commit()
 
+        return self
 
-@dataclass
-class BusinessException(BaseExceptionE):
-    """Business rules exception."""
+    def delete(self):
+        """Delete and commit."""
+        db.session.delete(self)
+        db.session.flush()
+        db.session.commit()
 
-    def __post_init__(self):
-        """Return a valid BusinessException."""
-        if not self.message:
-            self.message = "Business exception."
+    @staticmethod
+    def rollback():
+        """RollBack."""
+        db.session.rollback()
 
-
-@dataclass
-class DatabaseException(BaseExceptionE):
-    """Database insert/update exception."""
-
-    def __post_init__(self):
-        """Return a valid DatabaseException."""
-        self.message = "Database error while processing request."
-        self.status_code = HTTPStatus.INTERNAL_SERVER_ERROR
-
-
-@dataclass
-class ExternalServiceException(BaseExceptionE):
-    """3rd party service exception."""
-
-    def __post_init__(self):
-        """Return a valid ExternalServiceException."""
-        self.message = "3rd party service error while processing request."
-        self.error = f"{repr(self.error)}, {self.status_code}"
-        self.status_code = HTTPStatus.INTERNAL_SERVER_ERROR
+    def reset(self):
+        """Reset."""
+        if self:
+            db.session.delete(self)
+            db.session.commit()

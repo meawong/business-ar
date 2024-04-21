@@ -32,13 +32,14 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 """This exports all of the models and schemas used by the application."""
+from .business import Business
 from .db import db  # noqa: I001
 from .user import User
 from .user import UserRoles
 
-
 __all__ = (
     "db",
+    "Business",
     "User",
     "UserRoles",
 )
