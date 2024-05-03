@@ -128,7 +128,9 @@ class AccountService:
         client_secret = current_app.config.get("AUTH_SVC_CLIENT_SECRET")
 
         token = AccountService.get_service_client_token(client_id, client_secret)
-        endpoint = f"{current_app.config.get('AUTH_API_URL')}/orgs?name={account_name.strip()}&validateName=true"
+        endpoint = (
+            f"{current_app.config.get('AUTH_API_URL')}/orgs?name={account_name.strip()}"
+        )
         accounts = RestService.get(endpoint=endpoint, token=token).json()
         return accounts
 
