@@ -1,7 +1,6 @@
-import { describe, expect, it, vi, beforeEach } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import { mockNuxtImport } from '@nuxt/test-utils/runtime'
 import { useKeycloak } from '~/composables/useKeycloak'
-import { mockedLogin } from '~/tests/mocks/mockedKeycloak'
 
 mockNuxtImport('useI18n', () => {
   return () => (
