@@ -130,6 +130,11 @@ def run():
             for filing in filings:
                 filing_id = filing["filing"]["header"]["id"]
                 identifier = filing["filing"]["business"]["identifier"]
+
+                filing['filing']['header']['learEffectiveDate'] = filing['filing']['header']['filingDateTime']
+                if not filing['filing']['header']['certifiedBy']:
+                    filing['filing']['header']['certifiedBy'] = 'Test'
+
                 if identifier in corps_with_failed_filing:
                     # pylint: disable=no-member; false positive
                     application.logger.debug(
