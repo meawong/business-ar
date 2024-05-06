@@ -37,7 +37,7 @@ export const useAnnualReportStore = defineStore('sbc-annual-report-store', () =>
         },
         onResponse ({ response }) {
           arFiling.value = response._data
-          console.log(arFiling.value)
+          // console.log(arFiling.value)
         },
         onResponseError ({ response }) {
           // console error a message from the api or a default message

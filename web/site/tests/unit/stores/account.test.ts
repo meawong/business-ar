@@ -1,8 +1,6 @@
 import { describe, expect, it, beforeEach } from 'vitest'
 import { registerEndpoint } from '@nuxt/test-utils/runtime'
 import { setActivePinia, createPinia } from 'pinia'
-// import type { Mock } from 'vitest'
-// import type { Store, StoreDefinition } from 'pinia'
 import { useAccountStore } from '#imports'
 import { mockedOrgs, mockNewAccount } from '~/tests/mocks/mockedData'
 

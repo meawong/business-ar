@@ -67,3 +67,24 @@ export const mockNewAccount = {
   statusCode: 'statusCode3',
   uuid: 'uuid3'
 }
+
+export const mockedArFilingResponse: ArFilingResponse = {
+  filing: {
+    annualReport: {
+      annualGeneralMeetingDate: '2024-04-30',
+      annualReportDate: '2024-04-30',
+      votedForNoAGM: false
+    },
+    header: {
+      completionDate: null,
+      filingDate: '2024-04-30',
+      filingYear: 2024,
+      id: 1,
+      name: 'Annual Report',
+      paymentStatus: null,
+      paymentToken: 123456,
+      status: 'Submitted',
+      submitter: null
+    }
+  }
+}
