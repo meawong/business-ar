@@ -1,5 +1,16 @@
 import { fileURLToPath } from 'node:url'
 import { defineVitestConfig } from '@nuxt/test-utils/config'
+// import Keycloak from 'keycloak-js'
+// import { vi } from 'vitest'
+// import keycloakClient from './plugins/keycloak.client'
+// import mockedKeycloak from './tests/mocks/mockedKeycloak'
+
+// const mockedKeycloak: Partial<Keycloak> = {
+//   init: vi.fn(),
+//   login: vi.fn(),
+//   logout: vi.fn(),
+//   authenticated: true
+// }
 
 export default defineVitestConfig({
   test: {
@@ -15,7 +26,7 @@ export default defineVitestConfig({
         domEnvironment: 'happy-dom'
         // overrides: {
         //   plugins: [
-
+        //     mockedKeycloak, 'keycloak'
         //   ]
         // }
         // mock: {

@@ -1,6 +1,15 @@
 import Keycloak from 'keycloak-js'
+import { mockedKeycloak } from '~/tests/mocks/mockedKeycloak'
 
 export default defineNuxtPlugin(async (_nuxtApp) => {
+  if (process.env.VITEST_WORKER_ID !== undefined) {
+    return {
+      provide: {
+        keycloak: mockedKeycloak as Keycloak
+      }
+    }
+  }
+
   const config = useRuntimeConfig()
   // define new keycloak
   const keycloak = new Keycloak({
