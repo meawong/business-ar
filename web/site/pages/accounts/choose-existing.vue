@@ -5,16 +5,15 @@ const { t } = useI18n()
 const isSmallScreen = useMediaQuery('(max-width: 640px)')
 const accountStore = useAccountStore()
 const loading = ref<boolean>(false)
+
 useHead({
   title: t('page.existingAccount.title')
 })
 
 onMounted(async () => {
-  const localePath = useLocalePath()
-  const account = useAccountStore()
   try {
     loading.value = true
-    const accounts = await account.getUserAccounts()
+    const accounts = await accountStore.getUserAccounts()
     if (accounts?.orgs.length === 0 || accounts === undefined) {
       return navigateTo(localePath('/accounts/create-new'))
     }

@@ -16,18 +16,16 @@ definePageMeta({
 })
 
 // load business details using route query nano id or navigate to /missing-id
-onMounted(async () => {
-  if (!route.query.nanoid) {
-    return navigateTo(localePath('/missing-id'))
-  } else {
-    try {
+if (!route.query.nanoid) {
+  await navigateTo(localePath('/missing-id'))
+} else {
+  try {
     // http://localhost:3000/en-CA?nanoid=TIG9kz_ykKVo0FMQAH76o
-      await busStore.getBusinessByNanoId(route.query.nanoid as string)
-    } catch {
-      await navigateTo(localePath('/missing-id'))
-    }
+    await busStore.getBusinessByNanoId(route.query.nanoid as string)
+  } catch {
+    await navigateTo(localePath('/missing-id'))
   }
-})
+}
 
 const { data } = await useAsyncData('content-data', () => {
   return queryContent()
