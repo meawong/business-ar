@@ -96,6 +96,7 @@ export const useBusinessStore = defineStore('sbc-business-store', () => {
 
   return {
     getBusinessByNanoId,
+    getBusinessDetails,
     updatePaymentStatusForBusiness,
     loading,
     currentBusiness,

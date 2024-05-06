@@ -4,11 +4,6 @@ import { setActivePinia, createPinia } from 'pinia'
 import { useAnnualReportStore } from '#imports'
 import { mockedArFilingResponse } from '~/tests/mocks/mockedData'
 
-registerEndpoint('/business/NaN/filings', {
-  method: 'POST',
-  handler: () => (mockedArFilingResponse)
-})
-
 describe('Annual Report Store Tests', () => {
   beforeEach(() => {
     setActivePinia(createPinia())
@@ -22,6 +17,11 @@ describe('Annual Report Store Tests', () => {
   })
 
   it('creates ar filing, assigns store value and returns paymentToken and filingId', async () => {
+    registerEndpoint('/business/NaN/filings', {
+      method: 'POST',
+      handler: () => (mockedArFilingResponse)
+    })
+
     const arStore = useAnnualReportStore()
     // submit filing
     const { paymentToken, filingId } = await arStore.submitAnnualReportFiling({

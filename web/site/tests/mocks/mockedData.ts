@@ -81,10 +81,37 @@ export const mockedArFilingResponse: ArFilingResponse = {
       filingYear: 2024,
       id: 1,
       name: 'Annual Report',
-      paymentStatus: null,
+      paymentStatus: 'PAID',
       paymentToken: 123456,
       status: 'Submitted',
       submitter: null
     }
+  }
+}
+
+export const mockedBusinessNano: BusinessNano = {
+  identifier: '123456789',
+  legalName: 'Test Business',
+  legalType: 'BC',
+  taxId: null
+}
+
+export const mockedBusinessFull = {
+  business: {
+    businessNumber: '234653465',
+    corpState: 'some state',
+    corpStateClass: 'some class',
+    email: 'some email',
+    foundingDate: 'some date',
+    goodStanding: true,
+    identifier: '123456789',
+    jurisdiction: 'BC',
+    lastAgmDate: null,
+    lastArDate: '2020-10-10',
+    lastLedgerTimestamp: '',
+    legalName: 'Test Business Inc',
+    legalType: 'BC',
+    nextARYear: 2021,
+    status: 'some status'
   }
 }
