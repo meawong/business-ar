@@ -8,7 +8,7 @@ const props = defineProps({
 
 defineEmits(['submit']) // fix typing ?
 
-const hasEmptyFees = computed(() => !props.fees?.length)
+// const hasEmptyFees = computed(() => !props.fees?.length)
 
 const displayCanadianDollars = (amount: number) => {
   if (!amount) {
