@@ -19,17 +19,15 @@ export default defineVitestConfig({
     coverage: {
       provider: 'v8',
       reportsDirectory: './tests/coverage',
-      exclude: [
-        '**/enums/**',
-        '**/interfaces/**',
-        'nuxt.config.ts',
-        'playwright.config.ts',
-        'tailwind.config.ts',
-        '**/tests/helpers/**',
-        '**/tests/setup/**',
-        '**/.nuxt/**',
-        'site/virtual**',
-        '**/isoCountriesList.ts'
+      include: [
+        'pages/**',
+        'layouts/**',
+        'components/**',
+        'composables/**',
+        'utils/**',
+        'services/**',
+        'plugins/**',
+        'stores/**'
       ]
     },
     includeSource: ['../pages/index.vue'],

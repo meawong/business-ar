@@ -1,7 +1,6 @@
 import { vi, describe, expect, it } from 'vitest'
 import { renderSuspended, mockNuxtImport, mountSuspended } from '@nuxt/test-utils/runtime'
-import { fireEvent, screen } from '@testing-library/vue'
-import { SbcInputsDateSelect, SbcDatePicker } from '#components'
+import { SbcInputsDateSelect } from '#components'
 import { enI18n } from '~/tests/mocks/i18n'
 import { dateToString } from '#imports'
 
