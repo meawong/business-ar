@@ -1,5 +1,5 @@
 import type { BusinessFull, BusinessNano } from '~/interfaces/business'
-export const useBusinessStore = defineStore('sbc-business-store', () => {
+export const useBusinessStore = defineStore('bar-sbc-business-store', () => {
   // config imports
   const { $keycloak } = useNuxtApp()
   const config = useRuntimeConfig()

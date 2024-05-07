@@ -8,7 +8,7 @@ import { type FilingData } from '~/interfaces/filing-data'
 
 import payApi from '~/services/pay-api'
 
-export const usePayFeesWidget = defineStore('payFeeWidget', () => {
+export const usePayFeesWidget = defineStore('bar-payFeeWidget', () => {
   const errors: Ref<Error[]> = ref([])
 
   const fees: Ref<PayFeesWidgetItem[]> = ref([])

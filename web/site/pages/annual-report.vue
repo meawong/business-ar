@@ -83,6 +83,8 @@ async function submitAnnualReport (event: FormSubmitEvent<any>) {
   } catch (e: any) {
     console.log(e)
     // do something if submitting ar fails
+  } finally {
+    loading.value = false
   }
 }
 
@@ -110,7 +112,6 @@ onMounted(() => {
 </script>
 <template>
   <div class="relative mx-auto flex w-full max-w-[1360px] flex-col gap-4 text-left sm:gap-8 md:flex-row">
-    <SbcLoadingSpinner v-if="loading" overlay />
     <div class="flex w-full flex-1 flex-col gap-6">
       <h1 class="text-3xl font-semibold text-bcGovColor-darkGray dark:text-white">
         {{ $t('page.annualReport.h1', { year: busStore.currentBusiness.nextARYear}) }}
@@ -203,6 +204,7 @@ onMounted(() => {
     <SbcFeeWidget
       class="sm:mt-2"
       :fees="payFeesWidget.fees"
+      :is-loading="loading"
       @submit="arFormRef?.submit()"
     />
   </div>

@@ -2,7 +2,8 @@
 import { type PayFeesWidgetItem } from '~/interfaces/fees'
 
 const props = defineProps({
-  fees: { type: Array<PayFeesWidgetItem>, required: true }
+  fees: { type: Array<PayFeesWidgetItem>, required: true },
+  isLoading: { type: Boolean, default: false }
 })
 
 defineEmits(['submit']) // fix typing ?
@@ -100,6 +101,7 @@ const total = computed(() => {
     </UCard>
     <UButton
       :label="$t('btn.submitAndPay')"
+      :loading="isLoading"
       block
       @click="$emit('submit')"
     />

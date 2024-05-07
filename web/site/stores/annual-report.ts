@@ -1,4 +1,4 @@
-export const useAnnualReportStore = defineStore('sbc-annual-report-store', () => {
+export const useAnnualReportStore = defineStore('bar-sbc-annual-report-store', () => {
   // config imports
   const { $keycloak } = useNuxtApp()
   const accountStore = useAccountStore()

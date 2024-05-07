@@ -51,13 +51,6 @@ const { data } = await useAsyncData('content-data', () => {
     </UCard>
     <UCard class="w-full">
       <ContentRenderer :value="data" class="prose prose-bcGov text-left" />
-      <!-- <ContentDoc
-        :query="{
-          path: routeWithoutLocale,
-          where: { _locale: $i18n.locale }
-        }"
-        class="prose prose-bcGov text-left"
-      /> -->
     </UCard>
     <UButton
       :label="$t('btn.loginBCSC')"

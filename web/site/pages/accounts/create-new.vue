@@ -119,7 +119,7 @@ const validate = async (state: any): Promise<FormError[]> => {
             :ariaLabel="$t('page.createAccount.form.accountNameSection.accountNameInputLabel')"
             :placeholder="$t('page.createAccount.form.accountNameSection.accountNameInputLabel')"
             class="placeholder:text-bcGovColor-midGray"
-            @blue="accountFormRef.validate('accountName', { silent: true })"
+            @blur="accountFormRef.validate('accountName', { silent: true })"
           />
         </UFormGroup>
 
