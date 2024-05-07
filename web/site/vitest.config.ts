@@ -16,9 +16,10 @@ export default defineVitestConfig({
   test: {
     environment: 'nuxt',
     dir: 'tests',
-    // coverage: {
-    //   reportsDirectory: 'coverage',
-    // },
+    coverage: {
+      provider: 'v8',
+      reportsDirectory: './tests/coverage'
+    },
     includeSource: ['../pages/index.vue'],
     environmentOptions: {
       nuxt: {
