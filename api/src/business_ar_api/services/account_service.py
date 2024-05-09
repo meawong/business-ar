@@ -32,12 +32,10 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 """Manages Auth service interactions."""
-import requests
 from http import HTTPStatus
-from flask import current_app
 
-from business_ar_api.enums.enum import AuthHeaderType
-from business_ar_api.enums.enum import ContentType
+import requests
+from business_ar_api.enums.enum import AuthHeaderType, ContentType
 from business_ar_api.exceptions.exceptions import (
     AuthException,
     BusinessException,
@@ -45,6 +43,7 @@ from business_ar_api.exceptions.exceptions import (
 )
 from business_ar_api.services.rest_service import RestService
 from business_ar_api.utils.user_context import UserContext, user_context
+from flask import current_app
 
 
 class AccountService:
@@ -119,6 +118,19 @@ class AccountService:
             endpoint=endpoint,
             token=user.bearer_token,
             generate_token=False,
+        ).json()
+        return contact_details
+
+    @classmethod
+    @user_context
+    def get_account_contact(cls, account_id: int, **kwargs):
+        user: UserContext = kwargs["user_context"]
+        endpoint = (
+            f"{current_app.config.get('AUTH_API_URL')}/orgs/{account_id}/contacts"
+        )
+        contact_details = RestService.get(
+            endpoint=endpoint,
+            token=user.bearer_token,
         ).json()
         return contact_details
 
