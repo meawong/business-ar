@@ -87,6 +87,8 @@ class Config:
     EMAIL_TEMPLATE_PATH = os.getenv("EMAIL_TEMPLATE_PATH")
     NOTIFY_API_URL = os.getenv("NOTIFY_API_URL")
 
+    LEGISLATIVE_TIMEZONE = os.getenv("LEGISLATIVE_TIMEZONE", "America/Vancouver")
+
     DB_USER = os.getenv("DATABASE_USERNAME", "")
     DB_PASSWORD = os.getenv("DATABASE_PASSWORD", "")
     DB_NAME = os.getenv("DATABASE_NAME", "")

@@ -34,21 +34,24 @@
 """
 This module contains the services necessary for handling notifications.
 """
+import base64
+from datetime import datetime
 from http import HTTPStatus
 from pathlib import Path
-import requests
-from flask import current_app
-from jinja2 import Template
-import base64
 
+import requests
 from business_ar_api.exceptions import BusinessException
-from business_ar_api.models import Business as BusinessModel, Filing as FilingModel
+from business_ar_api.models import Business as BusinessModel
+from business_ar_api.models import Filing as FilingModel
 from business_ar_api.services import (
     AccountService,
     BusinessService,
     FilingService,
     PaymentService,
 )
+from business_ar_api.utils.legislation_datetime import LegislationDatetime
+from flask import current_app
+from jinja2 import Template
 
 
 class NotificationService:
@@ -77,21 +80,33 @@ class NotificationService:
         ).read_text()
         filled_template = NotificationService._substitute_template_parts(template)
         jinja_template = Template(filled_template, autoescape=True)
+        filing_date_time = NotificationService._get_tmz_date_time_string(
+            filing.filing_date
+        )
 
         html_out = jinja_template.render(
-            business=business.json(), filing=filing_data, header=filing_header
+            business=business.json(),
+            filing=filing_data,
+            header=filing_header,
+            filing_date_time=filing_date_time,
         )
         # get attachments
         pdfs = NotificationService._get_pdfs(token, business, filing)
 
         # get recipients
-        recipients = "test@abc.com"
-        if not recipients:
+        account_id = filing.payment_account
+        contact_details = AccountService.get_account_contact(account_id)
+
+        recipients_list = []
+        for contact in contact_details.get("contacts"):
+            if email := contact.get("email"):
+                recipients_list.append(email)
+        if recipients_list:
+            recipients = ",".join(recipients_list)
+        else:
             return {}
 
         subject = f"{business.legal_name} - Confirmation of Annual Report"
-        print(html_out)
-
         return {
             "recipients": recipients,
             "requestBy": "BCRegistries@gov.bc.ca",
@@ -112,16 +127,14 @@ class NotificationService:
                 "filingDateTime": filing.filing_date.isoformat(),
                 "effectiveDateTime": "",
                 "filingIdentifier": str(filing.id),
-                "businessNumber": business.tax_id,
             }
-            print(url)
-            print(payload)
+            if business.tax_id:
+                payload["businessNumber"] = business.tax_id
             receipt = requests.post(
                 url,
                 json=payload,
                 headers=headers,
             )
-            print(receipt)
             if receipt.status_code != HTTPStatus.CREATED:
                 current_app.logger.error(
                     "Failed to get receipt pdf for filing: %s", filing.id
@@ -205,4 +218,17 @@ class NotificationService:
             },
         )
         if resp.status_code != HTTPStatus.OK:
-            raise BusinessException("Unsuccessful response when sending email.")
+            raise BusinessException(
+                "Unsuccessful response when sending email.", "", resp.status_code
+            )
+
+    @staticmethod
+    def _get_tmz_date_time_string(filing_date):
+        filing_date = datetime.fromisoformat(filing_date.isoformat())
+        leg_tmz_filing_date = LegislationDatetime.as_legislation_timezone(filing_date)
+        hour = leg_tmz_filing_date.strftime("%I").lstrip("0")
+        am_pm = leg_tmz_filing_date.strftime("%p").lower()
+        leg_tmz_filing_date = leg_tmz_filing_date.strftime(
+            f"%B %d, %Y at {hour}:%M {am_pm} Pacific time"
+        )
+        return leg_tmz_filing_date
