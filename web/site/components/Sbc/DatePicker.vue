@@ -41,7 +41,7 @@ watch(() => props.setMinDate, (val) => { minDate.value = val || null })
       :min-date="minDate || ''"
       :month-change-on-scroll="false"
       :week-start="0"
-      data-cy="date-picker"
+      data-testid="date-picker"
     />
   </div>
 </template>

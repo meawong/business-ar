@@ -2,12 +2,13 @@
 import { type PayFeesWidgetItem } from '~/interfaces/fees'
 
 const props = defineProps({
-  fees: { type: Array<PayFeesWidgetItem>, required: true }
+  fees: { type: Array<PayFeesWidgetItem>, required: true },
+  isLoading: { type: Boolean, default: false }
 })
 
 defineEmits(['submit']) // fix typing ?
 
-const hasEmptyFees = computed(() => !props.fees?.length)
+// const hasEmptyFees = computed(() => !props.fees?.length)
 
 const displayCanadianDollars = (amount: number) => {
   if (!amount) {
@@ -100,6 +101,7 @@ const total = computed(() => {
     </UCard>
     <UButton
       :label="$t('btn.submitAndPay')"
+      :loading="isLoading"
       block
       @click="$emit('submit')"
     />

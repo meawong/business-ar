@@ -16,18 +16,16 @@ definePageMeta({
 })
 
 // load business details using route query nano id or navigate to /missing-id
-onMounted(async () => {
-  if (!route.query.nanoid) {
-    return navigateTo(localePath('/missing-id'))
-  } else {
-    try {
+if (!route.query.nanoid) {
+  await navigateTo(localePath('/missing-id'))
+} else {
+  try {
     // http://localhost:3000/en-CA?nanoid=TIG9kz_ykKVo0FMQAH76o
-      await busStore.getBusinessByNanoId(route.query.nanoid as string)
-    } catch {
-      await navigateTo(localePath('/missing-id'))
-    }
+    await busStore.getBusinessByNanoId(route.query.nanoid as string)
+  } catch {
+    await navigateTo(localePath('/missing-id'))
   }
-})
+}
 
 const { data } = await useAsyncData('content-data', () => {
   return queryContent()
@@ -53,13 +51,6 @@ const { data } = await useAsyncData('content-data', () => {
     </UCard>
     <UCard class="w-full">
       <ContentRenderer :value="data" class="prose prose-bcGov text-left" />
-      <!-- <ContentDoc
-        :query="{
-          path: routeWithoutLocale,
-          where: { _locale: $i18n.locale }
-        }"
-        class="prose prose-bcGov text-left"
-      /> -->
     </UCard>
     <UButton
       :label="$t('btn.loginBCSC')"

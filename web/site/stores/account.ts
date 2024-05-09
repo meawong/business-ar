@@ -1,6 +1,6 @@
 import type { NewAccount } from '~/interfaces/account'
 import { type Org } from '~/interfaces/org'
-export const useAccountStore = defineStore('sbc-account-store', () => {
+export const useAccountStore = defineStore('bar-sbc-account-store', () => {
   // config imports
   const { $keycloak } = useNuxtApp()
   const token = $keycloak?.token
@@ -62,7 +62,7 @@ export const useAccountStore = defineStore('sbc-account-store', () => {
           Authorization: `Bearer ${token}`
         },
         onResponse ({ response }) {
-          console.log(response)
+          // console.log(response)
           if (response.ok) {
             // set userAccounts if response === 200, then navigate to AR filing page
             currentAccount.value = response._data
