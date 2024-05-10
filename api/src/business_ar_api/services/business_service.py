@@ -80,6 +80,12 @@ class BusinessService:
                 BusinessService._get_next_ar_year(business_details)
             )
 
+        if "businessNumber" in business_details.get("business"):
+            business_details["business"]["taxId"] = business_details["business"][
+                "businessNumber"
+            ]
+            del business_details["business"]["businessNumber"]
+
         return business_details
 
     @classmethod
