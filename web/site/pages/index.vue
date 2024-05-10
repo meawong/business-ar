@@ -6,7 +6,7 @@ const busStore = useBusinessStore()
 const route = useRoute()
 const localePath = useLocalePath()
 const { locale } = useI18n()
-// console.log(routeWithoutLocale.value)
+
 useHead({
   title: t('page.home.title')
 })
@@ -15,26 +15,31 @@ definePageMeta({
   order: 0
 })
 
-// load business details using route query nano id or navigate to /missing-id
-if (!route.query.nanoid) {
-  await navigateTo(localePath('/missing-id'))
-} else {
-  try {
-    // http://localhost:3000/en-CA?nanoid=TIG9kz_ykKVo0FMQAH76o
-    await busStore.getBusinessByNanoId(route.query.nanoid as string)
-  } catch {
-    await navigateTo(localePath('/missing-id'))
-  }
-}
-
+// explicitly calling this instead of using <ContentDoc /> as its unreliable for pnpm generate
 const { data } = await useAsyncData('content-data', () => {
   return queryContent()
     .where({ _locale: locale.value, _path: { $eq: routeWithoutLocale.value } })
     .findOne()
 })
+
+// load business details using route query nano id or navigate to /missing-id
+onBeforeMount(async () => {
+  try {
+    if (!route.query.nanoid) {
+      throw new Error('Missing id to fetch business details')
+    }
+    // http://localhost:3000/en-CA?nanoid=TIG9kz_ykKVo0FMQAH76o
+    await busStore.getBusinessByNanoId(route.query.nanoid as string)
+  } catch (e) {
+    if (e instanceof Error) {
+      console.error(e.message)
+      await navigateTo(localePath('/missing-id'))
+    }
+  }
+})
 </script>
 <template>
-  <SbcLoadingSpinner v-if="busStore.loading" />
+  <SbcLoadingSpinner v-if="busStore.loading" overlay />
   <div v-else class="mx-auto flex flex-col items-center gap-4 text-center">
     <h1 class="text-3xl font-semibold text-bcGovColor-darkGray dark:text-white">
       {{ $t('page.home.h1') }}

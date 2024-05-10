@@ -1,10 +1,7 @@
 <script setup lang="ts">
 import type { FormError, FormSubmitEvent, FormErrorEvent } from '#ui/types'
 import { UForm, SbcInputsDateSelect } from '#components'
-const { t, locale } = useI18n()
-const config = useRuntimeConfig()
-const paymentUrl = config.public.paymentPortalUrl
-const baseUrl = config.public.baseUrl
+const { t } = useI18n()
 const busStore = useBusinessStore()
 const arStore = useAnnualReportStore()
 const payFeesWidget = usePayFeesWidget()
@@ -12,11 +9,6 @@ const payFeesWidget = usePayFeesWidget()
 useHead({
   title: t('page.annualReport.title')
 })
-
-interface ARFiling {
-  agmDate: Date | null,
-  votedForNoAGM: boolean
-}
 
 // options for radio buttons
 const options = [
@@ -38,6 +30,10 @@ const arFormRef = ref<InstanceType<typeof UForm> | null>(null)
 const dateSelectRef = ref<InstanceType<typeof SbcInputsDateSelect> | null>(null)
 const selectedRadio = ref<string>('option-1')
 const loading = ref<boolean>(false)
+const errorAlert = reactive({
+  title: '',
+  description: ''
+})
 
 // form state
 const arData = reactive<{ agmDate: string | null, officeAndDirectorsConfirmed: boolean}>({
@@ -45,25 +41,16 @@ const arData = reactive<{ agmDate: string | null, officeAndDirectorsConfirmed: b
   officeAndDirectorsConfirmed: false
 })
 
-// redirect user to pay screen
-async function handlePayment (payToken: number, filingId: number): Promise<void> {
-  const returnUrl = encodeURIComponent(`${baseUrl}${locale.value}/submitted?filing_id=${filingId}`)
-  const payUrl = paymentUrl + payToken + '/' + returnUrl
-  // assume Pay URL is always reachable
-  // otherwise, user will have to retry payment later
-  await navigateTo(payUrl, { external: true })
-}
-
 // custom validate the form
 const validate = (state: any): FormError[] => {
   const errors = []
   // if yes to agm, user must input a date
   if (selectedRadio.value === 'option-1' && !state.agmDate) {
-    errors.push({ path: 'agmDate', message: 'You must select a date if you held an AGM' })
+    errors.push({ path: 'agmDate', message: t('page.annualReport.form.agmDate.error') })
   }
   // user must confirm to submit form
   if (!state.officeAndDirectorsConfirmed) {
-    errors.push({ path: 'officeAndDirectorsConfirmed', message: 'You must confirm to continue' })
+    errors.push({ path: 'officeAndDirectorsConfirmed', message: t('page.annualReport.form.certify.error') })
   }
   return errors
 }
@@ -72,17 +59,20 @@ const validate = (state: any): FormError[] => {
 async function submitAnnualReport (event: FormSubmitEvent<any>) {
   try {
     loading.value = true
+    // set data based off radio button value
     const arFiling: ARFiling = {
       agmDate: selectedRadio.value === 'option-1' ? event.data.agmDate : null,
       votedForNoAGM: selectedRadio.value === 'option-3'
     }
-    // // console.log(arFiling)
+    // submit filing
     const { paymentToken, filingId } = await arStore.submitAnnualReportFiling(arFiling)
-    // // console.log(paymentToken, filingId)
-    await handlePayment(paymentToken, filingId)
-  } catch (e: any) {
-    console.log(e)
-    // do something if submitting ar fails
+    // redirect to pay with the returned token and filing id
+    await handlePaymentRedirect(paymentToken, filingId)
+  } catch (e) {
+    // log and display error alert if this fails
+    const msg = (e as Error).message ?? 'Could not complete filing or payment request, please try again.'
+    console.error(msg)
+    errorAlert.description = msg
   } finally {
     loading.value = false
   }
@@ -95,7 +85,7 @@ function onError (event: FormErrorEvent) {
   element?.scrollIntoView({ behavior: 'smooth', block: 'center' })
 }
 
-// clear date if switching radio optins
+// clear date if switching radio options
 function handleRadioClick (option: string) {
   if (selectedRadio.value !== option) {
     arFormRef.value?.clear()
@@ -105,9 +95,28 @@ function handleRadioClick (option: string) {
   }
 }
 
-// load fees for fee widget, might move into earlier setup
-onMounted(() => {
+onBeforeMount(() => {
+  // load fees for fee widget, might move into earlier setup
   addBarPayFees()
+
+  // add payment error message if pay status exists and doesnt equal paid
+  if (busStore.payStatus && busStore.payStatus !== 'PAID') {
+    errorAlert.title = 'Payment Not Complete'
+    errorAlert.description = 'Payment not completed, please try again. Pay status: ' + busStore.payStatus
+  }
+
+  // try to prefill form if a filing exists
+  if (Object.keys(arStore.arFiling).length !== 0) {
+    const votedForNoAGM = arStore.arFiling.filing.annualReport.votedForNoAGM
+    const agmDate = arStore.arFiling.filing.annualReport.annualGeneralMeetingDate
+    if (votedForNoAGM) {
+      selectedRadio.value = 'option-3'
+    } else if (!votedForNoAGM && !agmDate) {
+      selectedRadio.value = 'option-2'
+    } else if (agmDate) {
+      arData.agmDate = agmDate
+    }
+  }
 })
 </script>
 <template>
@@ -116,6 +125,20 @@ onMounted(() => {
       <h1 class="text-3xl font-semibold text-bcGovColor-darkGray dark:text-white">
         {{ $t('page.annualReport.h1', { year: busStore.currentBusiness.nextARYear}) }}
       </h1>
+
+      <UAlert
+        v-if="errorAlert.title || errorAlert.description"
+        :title="errorAlert.title"
+        :description="errorAlert.description"
+        icon="i-mdi-alert"
+        color="red"
+        variant="subtle"
+        :ui="{
+          title: 'text-base text-bcGovColor-midGray font-semibold',
+          description: 'mt-1 text-base leading-4 text-bcGovColor-midGray'
+        }"
+      />
+
       <UCard
         class="w-full"
         :ui="{
@@ -184,6 +207,7 @@ onMounted(() => {
               :max-date="new Date()"
               :placeholder="$t('page.annualReport.form.agmDate.placeholder')"
               :arialabel="$t('page.annualReport.form.agmDate.label')"
+              :initial-date="arData.agmDate ? new Date(arData.agmDate) : undefined"
               variant="bcGov"
               :disabled="selectedRadio !== 'option-1'"
               @selection="(e) => {
@@ -196,7 +220,7 @@ onMounted(() => {
 
           <!-- certify office address and directors -->
           <UFormGroup name="officeAndDirectorsConfirmed">
-            <UCheckbox v-model="arData.officeAndDirectorsConfirmed" :label="$t('page.annualReport.form.certify')" />
+            <UCheckbox v-model="arData.officeAndDirectorsConfirmed" :label="$t('page.annualReport.form.certify.question')" />
           </UFormGroup>
         </UForm>
       </UCard>

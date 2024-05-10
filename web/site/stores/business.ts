@@ -14,49 +14,53 @@ export const useBusinessStore = defineStore('bar-sbc-business-store', () => {
   // get basic business info by nano id
   async function getBusinessByNanoId (id: string): Promise<void> {
     loading.value = true
-    try {
-      // fetch by provided id
-      await $fetch<BusinessNano>(`${apiUrl}/business/token/${id}`, {
-        async onResponse ({ response }) {
-          if (response.ok) {
-            // get full business details by the returned identifier
-            await getBusinessDetails(response._data.identifier)
-          }
-        },
-        onResponseError ({ response }) {
-          // console error a message form the api or a default message
-          const errorMsg = response._data.message ?? 'Error retrieving business by nano id.'
-          console.error(errorMsg)
+    // fetch by provided id
+    await $fetch<BusinessNano>(`${apiUrl}/business/token/${id}`, {
+      async onResponse ({ response }) {
+        if (response.ok) {
+          // get full business details by the returned identifier
+          await getBusinessDetails(response._data.identifier)
         }
-      })
-    } catch (e: any) {
-      throw new Error(e)
-    } finally {
-      loading.value = false
-    }
+      },
+      onResponseError ({ response }) {
+        // console error a message form the api or a default message
+        const errorMsg = response._data.message ?? 'Error retrieving business by nano id.'
+        console.error(errorMsg)
+      }
+    })
+    loading.value = false
   }
 
   // fetch full business details by identifier
   async function getBusinessDetails (identifier: string): Promise<void> {
-    try {
-      await $fetch<BusinessFull>(`${apiUrl}/business/${identifier}`, {
-        onResponse ({ response }) {
-          if (response.ok) {
-            // set store values if response === 200
-            // console.log(response._data)
-            currentBusiness.value = response._data.business
-            nextArDate.value = addOneYear(response._data.business.lastArDate)
+    await $fetch<BusinessFull>(`${apiUrl}/business/${identifier}`, {
+      onResponse ({ response }) {
+        if (response.ok) {
+          // set store values if response === 200
+          // console.log(response._data)
+          const bus: BusinessFull = response._data.business
+          currentBusiness.value = bus
+
+          // throw error if business already filed an AR for the current year
+          const currentYear = new Date().getFullYear()
+          if (bus.lastArDate && new Date(bus.lastArDate).getFullYear() === currentYear) {
+            throw new Error(`Business has already filed an Annual Report for ${currentYear}`)
           }
-        },
-        onResponseError ({ response }) {
-          // console error a message from the api or a default message
-          const errorMsg = response._data.message ?? 'Error retrieving business details.'
-          console.error(errorMsg)
+
+          // if no lastArDate, it means this is the companies first AR, so need to use founding date instead
+          if (!bus.lastArDate) {
+            nextArDate.value = addOneYear(bus.foundingDate)
+          } else {
+            nextArDate.value = addOneYear(bus.lastArDate)
+          }
         }
-      })
-    } catch (e: any) {
-      throw new Error(e)
-    }
+      },
+      onResponseError ({ response }) {
+        // console error a message from the api or a default message
+        const errorMsg = response._data.message ?? 'Error retrieving business details.'
+        console.error(errorMsg)
+      }
+    })
   }
 
   // ping sbc pay to see if payment went through and return pay status details
@@ -64,7 +68,7 @@ export const useBusinessStore = defineStore('bar-sbc-business-store', () => {
     const identifier = currentBusiness.value.jurisdiction + currentBusiness.value.identifier
     loading.value = true
     try {
-      const response = await $fetch<ArFilingResponse>(`${apiUrl}/business/${identifier}/filings/${filingId}/payment`, {
+      await $fetch<ArFilingResponse>(`${apiUrl}/business/${identifier}/filings/${filingId}/payment`, {
         method: 'PUT',
         headers: {
           Authorization: `Bearer ${$keycloak.token}`
@@ -82,11 +86,8 @@ export const useBusinessStore = defineStore('bar-sbc-business-store', () => {
           console.error(errorMsg)
         }
       })
-
-      if (response === undefined) {
-        throw new Error('Could not update payment status.')
-      }
     } catch (error) {
+      // do something if error from put request
       console.error('An error occurred:', error)
       throw error
     } finally {
