@@ -31,10 +31,8 @@ onBeforeMount(async () => {
     // http://localhost:3000/en-CA?nanoid=TIG9kz_ykKVo0FMQAH76o
     await busStore.getBusinessByNanoId(route.query.nanoid as string)
   } catch (e) {
-    if (e instanceof Error) {
-      console.error(e.message)
-      await navigateTo(localePath('/missing-id'))
-    }
+    console.error((e as Error).message)
+    await navigateTo(localePath('/missing-id'))
   }
 })
 </script>
@@ -44,17 +42,17 @@ onBeforeMount(async () => {
     <h1 class="text-3xl font-semibold text-bcGovColor-darkGray dark:text-white">
       {{ $t('page.home.h1') }}
     </h1>
-    <UCard class="w-full">
+    <UCard class="w-full" data-testid="bus-details-card">
       <div class="flex grid-cols-6 flex-col text-left sm:grid">
         <span class="col-span-2 col-start-1 whitespace-nowrap font-semibold text-bcGovColor-darkGray">{{ $t('labels.busName') }}</span>
-        <span class="col-span-full col-start-3 whitespace-nowrap text-bcGovColor-midGray">{{ busStore.currentBusiness.legalName }}</span>
+        <span class="col-span-full col-start-3 whitespace-nowrap text-bcGovColor-midGray">{{ busStore.businessNano.legalName }}</span>
         <span class="col-span-2 col-start-1 mt-2 whitespace-nowrap font-semibold text-bcGovColor-darkGray sm:mt-0">{{ $t('labels.corpNum') }}</span>
-        <span class="col-span-full col-start-3 mb-2 whitespace-nowrap text-bcGovColor-midGray sm:mb-0">{{ busStore.currentBusiness.jurisdiction + busStore.currentBusiness.identifier }}</span>
-        <span class="col-span-2 col-start-1 whitespace-nowrap font-semibold text-bcGovColor-darkGray ">{{ $t('labels.busNum') }}</span>
-        <span class="col-span-full col-start-3 whitespace-nowrap text-bcGovColor-midGray">{{ busStore.currentBusiness.businessNumber }}</span>
+        <span class="col-span-full col-start-3 mb-2 whitespace-nowrap text-bcGovColor-midGray sm:mb-0">{{ busStore.businessNano.identifier }}</span>
+        <span v-if="busStore.businessNano.taxId" class="col-span-2 col-start-1 whitespace-nowrap font-semibold text-bcGovColor-darkGray ">{{ $t('labels.busNum') }}</span>
+        <span v-if="busStore.businessNano.taxId" class="col-span-full col-start-3 whitespace-nowrap text-bcGovColor-midGray">{{ busStore.businessNano.taxId }}</span>
       </div>
     </UCard>
-    <UCard class="w-full">
+    <UCard class="w-full" data-testid="content-data">
       <ContentRenderer :value="data" class="prose prose-bcGov text-left" />
     </UCard>
     <UButton

@@ -27,7 +27,8 @@ export default {
     },
     logout: 'se déconnecter',
     saveAccountAndFileAr: 'Enregistrer le compte et déposer le rapport annuel',
-    submitAndPay: 'Soumettre et Payer'
+    submitAndPay: 'Soumettre et Payer',
+    accountOptions: 'Menu Options du compte'
   },
   currency: {
     cad: 'CAD',
@@ -136,7 +137,7 @@ export default {
       title: 'Choisissez un Compte Existant - Rapport Annuel de Service BC',
       h1: 'Compte Existant Trouvé',
       h2: 'Vos Comptes Existants',
-      existingAccountWarning: 'Il semble que vous ayez déjà un compte auprès de BC Registries and Online Services. Vous pouvez utiliser un compte existant pour continuer ou en créer un nouveau.'
+      existingAccountWarning: 'Il semble que vous ayez déjà un compte auprès de Service BC Connect. Vous pouvez utiliser un compte existant pour continuer ou en créer un nouveau.'
     },
     missingId: {
       title: 'Autorisation Requise - Rapport Annuel de Service BC',
@@ -181,7 +182,7 @@ export default {
       itemLabels: {
         TEST: 'This is test entry',
         REGSIGIN: 'Significant Individual Change',
-        ANNBC: 'Rapport Annuel BC'
+        BCANN: 'Rapport Annuel BC'
       }
     }
   },
@@ -205,33 +206,5 @@ export default {
   LocaleSelect: {
     // aria-label
     label: 'Sélectionnez une langue, Français, langue actuelle.'
-  },
-  SbcProductCard: {
-    goTo: 'Aller au'
-  },
-  SbcDashboardTableApiKeys: {
-    title: 'Accès développeur',
-    description: {
-      main: "L'activation de l'accès des développeurs vous permettrait d'intégrer les services API BC Registries à votre système.",
-      sec: 'En savoir plus dans la'
-    },
-    cols: {
-      name: 'Nom',
-      env: 'Environnement',
-      apiKey: 'Clé API',
-      actions: 'Actions'
-    }
-  },
-  modal: {
-    createKey: {
-      title: 'Créer une clé',
-      content: 'Un nom est requis pour créer une nouvelle clé. Veuillez saisir un nom unique ci-dessous.',
-      formLabel: 'Nom'
-    },
-    revokeKey: {
-      title: 'Révoquer la clé - {key}',
-      content: "Êtes-vous sûr de vouloir révoquer cette clé API? Cela supprimera définitivement l'accès à la clé, les projets en cours utilisant cette clé pourraient être affectés.",
-      formLabel: "Entrez '{key}' pour confirmer."
-    }
   }
 }

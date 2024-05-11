@@ -8,6 +8,7 @@ export const useBusinessStore = defineStore('bar-sbc-business-store', () => {
   // store values
   const loading = ref<boolean>(true)
   const currentBusiness = ref<BusinessFull>({} as BusinessFull)
+  const businessNano = ref<BusinessNano>({} as BusinessNano)
   const nextArDate = ref<string>('')
   const payStatus = ref<string | null>(null)
 
@@ -16,10 +17,9 @@ export const useBusinessStore = defineStore('bar-sbc-business-store', () => {
     loading.value = true
     // fetch by provided id
     await $fetch<BusinessNano>(`${apiUrl}/business/token/${id}`, {
-      async onResponse ({ response }) {
+      onResponse ({ response }) {
         if (response.ok) {
-          // get full business details by the returned identifier
-          await getBusinessDetails(response._data.identifier)
+          businessNano.value = response._data
         }
       },
       onResponseError ({ response }) {
@@ -32,8 +32,11 @@ export const useBusinessStore = defineStore('bar-sbc-business-store', () => {
   }
 
   // fetch full business details by identifier
-  async function getBusinessDetails (identifier: string): Promise<void> {
-    await $fetch<BusinessFull>(`${apiUrl}/business/${identifier}`, {
+  function getBusinessDetails (identifier: string): Promise<BusinessFull> {
+    return $fetch<BusinessFull>(`${apiUrl}/business/${identifier}`, {
+      headers: {
+        Authorization: `Bearer ${$keycloak.token}`
+      },
       onResponse ({ response }) {
         if (response.ok) {
           // set store values if response === 200
@@ -101,6 +104,7 @@ export const useBusinessStore = defineStore('bar-sbc-business-store', () => {
     updatePaymentStatusForBusiness,
     loading,
     currentBusiness,
+    businessNano,
     nextArDate,
     payStatus
   }
