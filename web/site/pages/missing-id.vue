@@ -3,6 +3,7 @@ const { t } = useI18n()
 const routeWithoutLocale = useRouteWithoutLocale()
 const localePath = useLocalePath()
 const { locale } = useI18n()
+const nanoid = ref('')
 
 useHead({
   title: t('page.missingId.title')
@@ -20,13 +21,17 @@ const { data } = await useAsyncData('content-data-missing-id', () => {
 })
 </script>
 <template>
-  <div class="mx-auto flex flex-col items-center gap-4 text-center">
+  <div class="mx-auto flex flex-col items-center justify-center gap-4 text-center">
     <h1 class="text-3xl font-semibold text-bcGovColor-darkGray dark:text-white">
       {{ $t('page.missingId.h1') }}
     </h1>
     <UCard class="w-full max-w-lg" data-testid="content-data-missing-id">
       <ContentRenderer :value="data" class="prose prose-bcGov text-left" />
     </UCard>
-    <UButton label="use nano id" :to="localePath('/?nanoid=TIG9kz_ykKVo0FMQAH76o')" />
+    <!-- this is only for dev to enter nano ids -->
+    <div class="flex gap-2">
+      <UInput v-model="nanoid" placeholder="Enter a nano id" variant="bcGov" />
+      <UButton label="Go" :to="localePath(`/?nanoid=${nanoid}`)" />
+    </div>
   </div>
 </template>

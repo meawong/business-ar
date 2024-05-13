@@ -3,14 +3,8 @@ export default {
     getStarted: 'Get Started',
     goHome: 'Go Home',
     goBack: 'Go Back',
-    downloadSpec: 'Download the specification',
-    allProducts: 'View all products',
-    products: 'Products',
     dashboard: 'Dashboard',
     sbcConnect: 'Service BC Connect',
-    apiDoc: 'API documentation',
-    createKey: 'Create Key',
-    revoke: 'Revoke',
     copy: 'Copy',
     copied: 'Copied!',
     submit: 'Submit',
@@ -164,6 +158,10 @@ export default {
           question: 'I certify all information about the Office Addresses and Current Directors is correct.',
           error: 'You must confirm to continue'
         }
+      },
+      payError: {
+        title: 'Payment Not Complete',
+        description: 'Your payment was not completed, please try again.'
       }
     },
     submitted: {

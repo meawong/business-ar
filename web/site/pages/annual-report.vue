@@ -96,26 +96,20 @@ function handleRadioClick (option: string) {
   }
 }
 
-onMounted(async () => {
+onMounted(() => {
   try {
     initPage.value = true
     // load fees for fee widget, might move into earlier setup
     addBarPayFees()
 
-    try {
-      await busStore.getBusinessDetails(busStore.businessNano.identifier)
-    } catch (e) {
-      console.error((e as Error).message)
-    }
-
-    // add payment error message if pay status exists and doesnt equal paid
-    if (busStore.payStatus && busStore.payStatus !== 'PAID') {
-      errorAlert.title = 'Payment Not Complete'
-      errorAlert.description = 'Payment not completed, please try again. Pay status: ' + busStore.payStatus
-    }
-
     // try to prefill form if a filing exists
     if (Object.keys(arStore.arFiling).length !== 0) {
+      // add payment error message if pay status exists and doesnt equal paid
+      if (arStore.arFiling.filing.header.status && arStore.arFiling.filing.header.status !== 'PAID') {
+        errorAlert.title = t('page.annualReport.payError.title')
+        errorAlert.description = t('page.annualReport.payError.description')
+      }
+
       const votedForNoAGM = arStore.arFiling.filing.annualReport.votedForNoAGM
       const agmDate = arStore.arFiling.filing.annualReport.annualGeneralMeetingDate
       if (votedForNoAGM) {
@@ -134,7 +128,7 @@ onMounted(async () => {
 <template>
   <!-- eslint-disable vue/no-multiple-template-root -->
   <SbcLoadingSpinner v-if="initPage" overlay />
-  <div class="relative mx-auto flex w-full max-w-[1360px] flex-col gap-4 text-left sm:gap-8 md:flex-row">
+  <div v-else class="relative mx-auto flex w-full max-w-[1360px] flex-col gap-4 text-left sm:gap-8 md:flex-row">
     <div class="flex w-full flex-1 flex-col gap-6">
       <h1 class="text-3xl font-semibold text-bcGovColor-darkGray dark:text-white">
         {{ $t('page.annualReport.h1', { year: busStore.currentBusiness.nextARYear}) }}
