@@ -128,6 +128,12 @@ def create_filing(identifier, filing_id: Optional[int] = None):
         # Affiliate the entity to the account if the affiliation does not exist.
         # If the invoice is already created, the account cannot be changed.
         if not filing or not filing.has_invoice:
+            entity_json = {
+                "businessIdentifier": business.identifier,
+                "name": business.legal_name,
+                "corpTypeCode": business.legal_type,
+            }
+            AccountService.find_or_create_entity(entity_json)
             affiliations = AccountService.get_account_affiliations(account_id)
             existing_affiliation = [
                 affiliation
