@@ -42,6 +42,7 @@ onBeforeMount(async () => {
         sessionStorage.clear() // clear session storage so new business doesnt use pre-exisiting values
         await busStore.getBusinessByNanoId(route.query.nanoid as string)
       }
+      await busStore.getBusinessDetails(busStore.businessNano.identifier) // load full business details immediately (if this fails, user cant continue)
       const { task, taskValue } = await busStore.getBusinessTask()
       // if task === 'filing', set store arFiling value
       if (task === 'filing' && 'filing' in taskValue) { // this means user has tried to file an ar previously
@@ -57,7 +58,6 @@ onBeforeMount(async () => {
           await navigateTo(localePath('/annual-report'))
         }
       } else { // user is authenticated but theres no existing filing, continue normal flow
-        await busStore.getBusinessDetails(busStore.businessNano.identifier) // load full business details immediately (if this fails, user cant continue)
         await navigateTo(localePath('/accounts/choose-existing'))
       }
     } else if (!$keycloak.authenticated && route.query.nanoid) {
