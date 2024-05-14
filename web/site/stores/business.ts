@@ -73,8 +73,7 @@ export const useBusinessStore = defineStore('bar-sbc-business-store', () => {
 
   // ping sbc pay to see if payment went through and return pay status details
   async function updatePaymentStatusForBusiness (filingId: string | number): Promise<void> {
-    const identifier = currentBusiness.value.jurisdiction + currentBusiness.value.identifier
-    await $fetch<ArFilingResponse>(`${apiUrl}/business/${identifier}/filings/${filingId}/payment`, {
+    await $fetch<ArFilingResponse>(`${apiUrl}/business/${businessNano.value.identifier}/filings/${filingId}/payment`, {
       method: 'PUT',
       headers: {
         Authorization: `Bearer ${$keycloak.token}`
