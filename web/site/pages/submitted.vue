@@ -1,20 +1,12 @@
 <script setup lang="ts">
-const { t, locale } = useI18n()
+const { t } = useI18n()
 const route = useRoute()
 const busStore = useBusinessStore()
-const routeWithoutLocale = useRouteWithoutLocale()
 const localePath = useLocalePath()
 const loading = ref(true)
 
 useHead({
   title: t('page.submitted.title')
-})
-
-// explicitly calling this instead of using <ContentDoc /> as its unreliable for pnpm generate
-const { data } = await useAsyncData('content-data-submitted', () => {
-  return queryContent()
-    .where({ _locale: locale.value, _path: { $eq: routeWithoutLocale.value } })
-    .findOne()
 })
 
 // TODO: need to handle if theres no filing id in the route query or if the put request fails
@@ -39,8 +31,9 @@ onMounted(async () => {
 })
 </script>
 <template>
+  <!-- eslint-disable vue/no-multiple-template-root -->
   <SbcLoadingSpinner v-if="loading" overlay />
-  <div v-else class="mx-auto flex flex-col items-center justify-center gap-4 text-center">
+  <div v-show="!loading" class="mx-auto flex flex-col items-center justify-center gap-4 text-center">
     <h1 class="flex items-center gap-2 text-3xl font-semibold text-bcGovColor-darkGray dark:text-white">
       <span>{{ $t('page.submitted.h1') }}</span>
       <UIcon
@@ -48,8 +41,6 @@ onMounted(async () => {
         class="size-10 shrink-0 text-outcomes-approved"
       />
     </h1>
-    <UCard class="w-full">
-      <ContentRenderer :value="data" class="prose prose-bcGov text-left" />
-    </UCard>
+    <SbcNuxtContentCard id="submitted" />
   </div>
 </template>

@@ -162,15 +162,15 @@ onMounted(() => {
             {{ $t('page.annualReport.h2', { name: busStore.currentBusiness.legalName }) }}
           </h2>
         </template>
-        <!-- display company details -->
-        <div class="grid grid-cols-12">
-          <span class="col-span-2 col-start-1 whitespace-nowrap font-semibold text-bcGovColor-darkGray ">{{ $t('labels.busName') }}</span>
-          <span class="col-span-full whitespace-nowrap text-bcGovColor-midGray lg:col-start-5 xl:col-start-4">{{ busStore.currentBusiness.legalName }}</span>
-          <span class="col-span-2 col-start-1 whitespace-nowrap font-semibold text-bcGovColor-darkGray ">{{ $t('labels.corpNum') }}</span>
-          <span class="col-span-full whitespace-nowrap text-bcGovColor-midGray lg:col-start-5 xl:col-start-4">{{ busStore.currentBusiness.jurisdiction + busStore.currentBusiness.identifier }}</span>
-          <span class="col-span-2 col-start-1 whitespace-nowrap font-semibold text-bcGovColor-darkGray ">{{ $t('labels.arDate') }}</span>
-          <span class="col-span-full whitespace-nowrap text-bcGovColor-midGray lg:col-start-5 xl:col-start-4">{{ busStore.nextArDate }}</span>
-        </div>
+
+        <SbcBusinessInfo
+          break-value="lg"
+          :items="[
+            { label: $t('labels.busName'), value: busStore.businessNano.legalName },
+            { label: $t('labels.corpNum'), value: busStore.businessNano.identifier },
+            { label: $t('labels.arDate'), value: busStore.nextArDate },
+          ]"
+        />
 
         <UDivider class="mb-4 mt-8" />
 
