@@ -161,6 +161,18 @@ class FilingSerializer:
         if filing.submitter_id:
             filing_dict["filing"]["header"]["submitter"] = filing.submitter.username
             filing_dict["filing"]["header"]["certifiedBy"] = filing.submitter.username
+            certified_by_display_name = ""
+            if filing.submitter.firstname:
+                certified_by_display_name = (
+                    f"{certified_by_display_name}{filing.submitter.firstname} "
+                )
+            if filing.submitter.lastname:
+                certified_by_display_name = (
+                    f"{certified_by_display_name}{filing.submitter.lastname}"
+                )
+            filing_dict["filing"]["header"][
+                "certifiedByDisplayName"
+            ] = certified_by_display_name
 
         if filing.payment_account:
             filing_dict["filing"]["header"]["paymentAccount"] = filing.payment_account
