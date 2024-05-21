@@ -31,40 +31,7 @@
 # CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
-"""The Business AR Payment service.
+"""Services used by Business-AR-Pay."""
+from gcp_queue import GcpQueue
 
-This module applied payments against Filings and updates the filing status to PAID.
-"""
-from __future__ import annotations
-
-import sentry_sdk
-from business_ar_api import db
-from flask import Flask
-from sentry_sdk.integrations.flask import FlaskIntegration
-
-from .config import Config, ProdConfig
-from .resources import register_endpoints
-from .services import gcp_queue
-
-
-def create_app(environment: Config = ProdConfig, **kwargs) -> Flask:
-    """Return a configured Flask App using the Factory method."""
-    app = Flask(__name__)
-    app.config.from_object(environment)
-
-    # Configure Sentry
-    if dsn := app.config.get("SENTRY_DSN", None):
-        sentry_sdk.init(
-            dsn=dsn,
-            integrations=[FlaskIntegration()],
-            send_default_pii=False,
-        )
-    try:
-        db.init_app(app)
-        print("db init complete")
-    except Exception as e:
-        print(e)
-    gcp_queue.init_app(app)
-    register_endpoints(app)
-
-    return app
+gcp_queue = GcpQueue()
