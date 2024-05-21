@@ -147,12 +147,12 @@ files = []
 develop = false
 
 [package.dependencies]
-flask = "^2.2.3"
+flask = "^3.0.3"
 flask-babel = "^3.1.0"
 flask-cors = "^4.0.0"
 flask-jwt-oidc = "^0.3.0"
 flask-migrate = "^4.0.4"
-flask-sqlalchemy = "^3.0.3"
+flask-sqlalchemy = "^3.1.1"
 gunicorn = "^21.2.0"
 Jinja2 = "^3.1.2"
 jsonschema = {version = "^4.20.0", extras = ["format"]}
@@ -166,7 +166,7 @@ sentry-sdk = "^1.44.1"
 type = "git"
 url = "https://github.com/bcgov/business-ar.git"
 reference = "main"
-resolved_reference = "2e78cd6d6e18ad387892bce549258bc264207cd3"
+resolved_reference = "8ccb3a7bd69d010d99ba5552c63605038c3d8181"
 subdirectory = "api"
 
 [[package]]
@@ -375,13 +375,13 @@ setuptools = "*"
 
 [[package]]
 name = "flask"
-version = "2.3.3"
+version = "3.0.3"
 description = "A simple framework for building complex web applications."
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "flask-2.3.3-py3-none-any.whl", hash = "sha256:f69fcd559dc907ed196ab9df0e48471709175e696d6e698dd4dbe940f96ce66b"},
-    {file = "flask-2.3.3.tar.gz", hash = "sha256:09c347a92aa7ff4a8e7f3206795f30d826654baf38b873d0744cd571ca609efc"},
+    {file = "flask-3.0.3-py3-none-any.whl", hash = "sha256:34e815dfaa43340d1d15a5c3a02b8476004037eb4840b34910c6e21679d288f3"},
+    {file = "flask-3.0.3.tar.gz", hash = "sha256:ceb27b0af3823ea2737928a4d99d125a06175b8512c445cbd9a9ce200ef76842"},
 ]
 
 [package.dependencies]
@@ -389,7 +389,7 @@ blinker = ">=1.6.2"
 click = ">=8.1.3"
 itsdangerous = ">=2.1.2"
 Jinja2 = ">=3.1.2"
-Werkzeug = ">=2.3.7"
+Werkzeug = ">=3.0.0"
 
 [package.extras]
 async = ["asgiref (>=3.2)"]
@@ -1879,4 +1879,4 @@ tomli = "*"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.12.2"
-content-hash = "11b38c2d4287318fd000443136cbba9314ffd4356ab7fa5ee0c9f6d41b1c2d96"
+content-hash = "345aac5f55aa105c03d1bbc04c56ea81578d0d74e572385ecf3508bb9cfd4b82"
