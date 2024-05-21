@@ -97,7 +97,7 @@ def worker():
         return {}, HTTPStatus.OK
 
     # 3. Update model
-    filing = Filing.get_filing_by_payment_token(payment_token=str(payment_token.id))
+    filing = Filing.get_filing_by_payment_token(payment_token=int(payment_token.id))
     if not filing:
         # The payment token might not be there yet, put back on Q
         return {}, HTTPStatus.NOT_FOUND

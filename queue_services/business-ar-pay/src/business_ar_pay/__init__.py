@@ -59,11 +59,8 @@ def create_app(environment: Config = ProdConfig, **kwargs) -> Flask:
             integrations=[FlaskIntegration()],
             send_default_pii=False,
         )
-    try:
-        db.init_app(app)
-        print("db init complete")
-    except Exception as e:
-        print(e)
+
+    db.init_app(app)
     gcp_queue.init_app(app)
     register_endpoints(app)
 
