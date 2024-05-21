@@ -130,6 +130,11 @@ class Filing(BaseModel):
         )
         return query.all()
 
+    @classmethod
+    def get_filing_by_payment_token(cls, payment_token: str) -> Filing:
+        """Return filings by payment token."""
+        return cls.query.filter_by(invoice_id=payment_token).one_or_none()
+
 
 class FilingSerializer:
     """Serializer for filings. Can convert to dict, string from filing model."""
