@@ -95,13 +95,13 @@ files = [
 
 [[package]]
 name = "cachelib"
-version = "0.9.0"
+version = "0.13.0"
 description = "A collection of cache libraries in the same API interface."
 optional = false
-python-versions = ">=3.7"
+python-versions = ">=3.8"
 files = [
-    {file = "cachelib-0.9.0-py3-none-any.whl", hash = "sha256:811ceeb1209d2fe51cd2b62810bd1eccf70feba5c52641532498be5c675493b3"},
-    {file = "cachelib-0.9.0.tar.gz", hash = "sha256:38222cc7c1b79a23606de5c2607f4925779e37cdcea1c2ad21b8bae94b5425a5"},
+    {file = "cachelib-0.13.0-py3-none-any.whl", hash = "sha256:8c8019e53b6302967d4e8329a504acf75e7bc46130291d30188a6e4e58162516"},
+    {file = "cachelib-0.13.0.tar.gz", hash = "sha256:209d8996e3c57595bee274ff97116d1d73c4980b2fd9a34c7846cd07fd2e1a48"},
 ]
 
 [[package]]
@@ -442,20 +442,20 @@ Flask = ">=0.9"
 
 [[package]]
 name = "flask-jwt-oidc"
-version = "0.3.0"
-description = "Flask_JWT_OIDC"
+version = "0.7.0"
+description = "Opinionated flask oidc client"
 optional = false
-python-versions = "*"
+python-versions = "<4.0,>=3.9"
 files = [
-    {file = "flask_jwt_oidc-0.3.0-py3-none-any.whl", hash = "sha256:c2a62ecb463a506155fabf70fd20684830213f4e48aa98cd7abd48f253e8ad18"},
-    {file = "flask_jwt_oidc-0.3.0.tar.gz", hash = "sha256:5859015847fa44f291082555fdf6ca986294f6c57166f9ea9da2a2b3fdda5138"},
+    {file = "flask_jwt_oidc-0.7.0-py3-none-any.whl", hash = "sha256:0fec097ea0557fe315ca576f4c9a795c874bf28ae62b21eadf4626c5c5ca9029"},
+    {file = "flask_jwt_oidc-0.7.0.tar.gz", hash = "sha256:ba90e3557e931b1c5cbd37fb2ddc462a525f74e2a85aa7d684a733e68fa9a3e4"},
 ]
 
 [package.dependencies]
-cachelib = "*"
-flask = "*"
-python-jose = "*"
-six = "*"
+cachelib = ">=0.13.0,<0.14.0"
+Flask = ">=2"
+python-jose = ">=3.3.0,<4.0.0"
+six = ">=1.16.0,<2.0.0"
 
 [[package]]
 name = "flask-migrate"
@@ -1734,4 +1734,4 @@ watchdog = ["watchdog (>=2.3)"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.12.2"
-content-hash = "45ed138786923d3a4e3efc4df976551632b2cd347ee7352e321c9245177eea66"
+content-hash = "73fd8d1f34962d6a4aecba321b20ab1623c1e22030bb64a4bde349ef6cce793c"
