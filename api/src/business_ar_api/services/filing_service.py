@@ -36,7 +36,7 @@ This module contains the services necessary for handling Filings,
 including creating a filing. 
 """
 from http import HTTPStatus
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import List
 
 from flask_jwt_oidc import JwtManager
@@ -87,6 +87,10 @@ class FilingService:
             filing.payment_completion_date = datetime.fromisoformat(
                 invoice_response.get("paymentDate")
             )
+        elif filing.payment_status_code == "APPROVED":
+            filing.payment_status_code = "COMPLETED"
+            filing.status = FilingModel.Status.PAID
+            filing.payment_completion_date = datetime.now(timezone.utc)
         else:
             filing.status = FilingModel.Status.PENDING
         filing.save()
