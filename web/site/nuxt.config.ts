@@ -2,13 +2,8 @@
 export default defineNuxtConfig({
   devtools: { enabled: false },
   ssr: true,
-  nitro: {
-    prerender: {
-      routes: [
-        '/en-CA/submitted',
-        '/fr-CA/submitted'
-      ]
-    }
+  routeRules: {
+    '/': { redirect: '/en-CA' }
   },
   modules: [
     '@nuxtjs/eslint-module',
@@ -18,9 +13,6 @@ export default defineNuxtConfig({
   extends: ['@daxiom/sbc-nuxt-assets-layer'],
   imports: {
     dirs: ['stores', 'composables', 'enums', 'interfaces', 'types', 'utils']
-  },
-  routeRules: {
-    '/': { redirect: '/en-CA' }
   },
   i18n: {
     locales: [
@@ -52,6 +44,9 @@ export default defineNuxtConfig({
       'fr-CA'
     ],
     contentHead: false
+    // experimental: {
+    //   clientDB: true
+    // }
   },
   colorMode: {
     preference: 'light',
