@@ -65,7 +65,7 @@ def get_business_details(identifier):
 
     try:
         business_details = BusinessService.get_business_details_from_colin(
-            business.identifier, business.legal_type
+            business.identifier, business.legal_type, business.id
         )
     except Exception as exception:
         current_app.logger.error(
