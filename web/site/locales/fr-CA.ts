@@ -1,4 +1,34 @@
 export default {
+  alerts: { // TODO: review alert messages
+    'future-filing': {
+      title: '',
+      description: "Le prochain Rapport Annuel de cette entreprise n'est pas dû avant le {date}. Veuillez déposer le Rapport Annuel à partir de cette date."
+    },
+    'invalid-next-ar-year': {
+      title: 'Année de Rapport Annuel invalide',
+      description: "L'année suivante du Rapport Annuel est invalide ou manquante."
+    },
+    'missing-token': {
+      title: '',
+      description: "Jeton manquant pour récupérer les détails de l'entreprise."
+    },
+    'internal-server-error': {
+      title: '',
+      description: "Erreur de serveur interne, veuillez réessayer plus tard ou contactez-nous pour obtenir de l'aide."
+    },
+    'invalid-token': {
+      title: 'Jeton Invalide',
+      description: "Erreur lors de la récupération des détails de l'entreprise avec le jeton fourni."
+    },
+    'business-details': {
+      title: '',
+      description: "Erreur lors de la récupération des détails de l'entreprise."
+    },
+    'account-access': {
+      title: 'Accès Refusé',
+      desciption: "Votre compte n'est pas autorisé à effectuer cette tâche."
+    }
+  },
   btn: {
     getStarted: 'Commencer',
     goHome: 'Accueil',
