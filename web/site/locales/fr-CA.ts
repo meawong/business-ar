@@ -26,7 +26,15 @@ export default {
     },
     'account-access': {
       title: 'Accès Refusé',
-      desciption: "Votre compte n'est pas autorisé à effectuer cette tâche."
+      description: "Votre compte n'est pas autorisé à effectuer cette tâche."
+    },
+    'payment-error': {
+      title: 'Paiement Incomplet',
+      description: "Votre paiement n'a pas été finalisé, veuillez réessayer."
+    },
+    'ar-submit-error': {
+      title: 'Erreur de Soumission',
+      description: "Une erreur s'est produite lors du traitement de votre demande. Veuillez confirmer vos informations et réessayer. Si le problème persiste, contactez le support pour obtenir de l'aide."
     }
   },
   btn: {
@@ -189,26 +197,31 @@ export default {
       h2: 'Rapport Annuel pour: {name}',
       reviewAndConfirm: 'Veuillez confirmer les adresses des bureaux et les administrateurs actuels ci-dessous.',
       form: {
-        heldAgm: {
-          question: "Es'ce que votre entreprise a tenu une assemblée générale annuelle?",
-          opt1: 'Oui',
-          opt2: "Nous n'avons pas encore tenu une AGA",
-          opt3: "Nous avons voté pour ne pas tenir d'AGA"
+        agmStatus: {
+          question: "Le statut de l'Assemblée Générale Annuelle (AGA) {year} de cette entreprise",
+          tooltip: "La collecte d'informations sur l'AGA nous aide à mieux calculer les dates de prolongation de l'AGA et les changements de lieu. Cela permet également de garantir que votre entreprise reste conforme et en règle.",
+          opt1: 'Notre AGA {year} a eu lieu',
+          opt2: 'Notre AGA {year} aura lieu',
+          opt3: "Le conseil d'administration a voté contre la tenue de notre AGA {year}",
+          error: "Veuillez sélectionner un statut d'AGA pour continuer"
         },
         agmDate: {
-          placeholder: "Sélectionnez la date de l'assemblée générale annuelle",
-          label: "Sélectionnez la date de l'assemblée générale annuelle",
+          placeholder: "Date de l'AGA",
+          label: "Date de l'AGA",
           format: 'Format: AAAA-MM-JJ',
           error: 'Vous devez sélectionner une date si vous avez tenu une AGA'
         },
+        voteDate: {
+          placeholder: 'Date de Résolution Unanime',
+          label: 'Date de Résolution Unanime',
+          format: 'Format: AAAA-MM-JJ',
+          error: "Vous devez sélectionner une date de résolution si le conseil d'administration a voté pour ne pas tenir d'AGA."
+        },
+        complianceWarning: "{boldStart}Important:{boldEnd} Veuillez vous assurer que vous respectez les exigences de l'AGA avant de déposer votre rapport annuel.",
         certify: {
           question: 'certifie que toutes les informations concernant les adresses des bureaux et les directeurs actuels sont exactes.',
           error: 'Vous devez confirmer pour continuer'
         }
-      },
-      payError: {
-        title: 'Paiement Incomplet',
-        description: "Votre paiement n'a pas été finalisé, veuillez réessayer."
       },
       noAddresses: 'Aucune adresse trouvée',
       noDirectors: 'Aucun réalisateur trouvé'

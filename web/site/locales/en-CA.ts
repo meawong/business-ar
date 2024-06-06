@@ -26,7 +26,15 @@ export default {
     },
     'account-access': {
       title: 'Access Denied',
-      desciption: 'Your account does not have permission to complete this task.'
+      description: 'Your account does not have permission to complete this task.'
+    },
+    'payment-error': {
+      title: 'Payment Not Complete',
+      description: 'Your payment was not completed, please try again.'
+    },
+    'ar-submit-error': {
+      title: 'Submission Error',
+      description: 'An error occurred while processing your request. Please confirm your information and try again. If the issue persists, contact support for assistance.'
     }
   },
   btn: {
@@ -189,26 +197,31 @@ export default {
       h2: 'Annual Report for: {name}',
       reviewAndConfirm: 'Please review the Office Addresses and Current Directors below.',
       form: {
-        heldAgm: {
-          question: 'Has your company held an Annual General Meeting?',
-          opt1: 'Yes',
-          opt2: 'We have not held an AGM yet',
-          opt3: 'We voted to not hold an AGM'
+        agmStatus: {
+          question: 'The {year} Annual General Meeting (AGM) status of this business',
+          tooltip: 'Gathering AGM information helps us better calculate dates for AGM extensions and location changes. It also helps ensure your business stays compliant and in good standing.',
+          opt1: 'Our {year} AGM was held',
+          opt2: 'Our {year} AGM is to be held',
+          opt3: 'The board voted to not hold our {year} AGM',
+          error: 'Please select an AGM status to continue'
         },
         agmDate: {
-          placeholder: 'Select Annual General Meeting Date',
-          label: 'Select Annual General Meeting Date',
+          placeholder: 'AGM Date',
+          label: 'AGM Date',
           format: 'Format: YYYY-MM-DD',
           error: 'You must select a date if you held an AGM'
         },
+        voteDate: {
+          placeholder: 'Unanimous Resolution Date',
+          label: 'Unanimous Resolution Date',
+          format: 'Format: YYYY-MM-DD',
+          error: 'You must select a resolution date if the board voted to not hold an AGM'
+        },
+        complianceWarning: '{boldStart}Important:{boldEnd} Please ensure that you meet the AGM compliance before filing your annual report.',
         certify: {
           question: 'certify all information about the Office Addresses and Current Directors is correct.',
           error: 'You must confirm to continue'
         }
-      },
-      payError: {
-        title: 'Payment Not Complete',
-        description: 'Your payment was not completed, please try again.'
       },
       noAddresses: 'No addresses found',
       noDirectors: 'No directors found'
