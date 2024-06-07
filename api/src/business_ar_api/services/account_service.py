@@ -94,6 +94,7 @@ class AccountService:
                 endpoint=f"{current_app.config.get('AUTH_API_URL')}/documents/termsofuse",
                 token=user.bearer_token,
             ).json()
+            res["termsOfUseCurrentVersion"] = tos_document_response.get("versionId")
             res["termsOfUse"] = tos_document_response.get("content")
         return res
 
