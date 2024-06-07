@@ -6,9 +6,9 @@ const route = useRoute()
 const localePath = useLocalePath()
 const busStore = useBusinessStore()
 const accountStore = useAccountStore()
-const loadStore = useLoadingStore()
-loadStore.pageLoading = true
+const pageLoading = useState('page-loading')
 const alertStore = useAlertStore()
+const environment = useRuntimeConfig().public.environment
 
 const nanoid = ref(route.query.nanoid || '')
 async function useNanoId () {
@@ -27,7 +27,7 @@ definePageMeta({
 // init page function to be able to return navigateTo instead of await, smoother UX
 async function initPage () {
   try {
-    loadStore.pageLoading = true
+    pageLoading.value = true
     alertStore.$reset()
     // get business task is user is logged in (user was redirected after keycloak login)
     if ($keycloak.authenticated) {
@@ -42,7 +42,7 @@ async function initPage () {
 
       // handle case where there are no tasks available (filings up to date)
       if (task === null) {
-        loadStore.pageLoading = false // only set false if not navigating to new page
+        pageLoading.value = false // only set false if not navigating to new page
         return
       }
 
@@ -53,11 +53,10 @@ async function initPage () {
       } else { // user is authenticated but theres no existing filing, continue normal flow
         return navigateTo(localePath('/accounts/choose-existing'))
       }
-      // loadStore.pageLoading = false // only set false if not navigating to new page
     } else if (!$keycloak.authenticated && route.query.nanoid) {
       // load business details if valid nano id and no user logged in (fresh start of flow)
       await busStore.getBusinessByNanoId(route.query.nanoid as string)
-      loadStore.pageLoading = false // only set false if not navigating to new page
+      pageLoading.value = false // only set false if not navigating to new page
     } else { // throw error if no valid nano id
       alertStore.addAlert({
         severity: 'error',
@@ -66,10 +65,9 @@ async function initPage () {
       console.error('Missing token to fetch business details')
       throw new Error('Missing token to fetch business details')
     }
-  } catch (e) { // log error and redirect if no nano id or any of the previous calls fail
+  } catch (e) {
     console.error((e as Error).message)
-  } finally {
-    loadStore.pageLoading = false
+    pageLoading.value = false
   }
 }
 
@@ -80,7 +78,7 @@ if (import.meta.client) {
 </script>
 <template>
   <!-- must use v-show for nuxt content to prerender correctly -->
-  <div v-show="!loadStore.pageLoading" class="mx-auto flex max-w-[95vw] flex-col items-center justify-center gap-4 text-center">
+  <div v-show="!pageLoading" class="mx-auto flex max-w-[95vw] flex-col items-center justify-center gap-4 text-center">
     <ClientOnly>
       <SbcPageSectionH1 :heading="$t('page.home.h1')" />
 
@@ -119,7 +117,7 @@ if (import.meta.client) {
         @click="keycloak.login"
       />
       <div
-        v-if="useRuntimeConfig().public.environment !== undefined"
+        v-if="environment.includes('Development') || environment.includes('Test')"
         class="flex gap-2"
         @keydown.enter.prevent="useNanoId"
       >

@@ -8,8 +8,7 @@ const busStore = useBusinessStore()
 const arStore = useAnnualReportStore()
 const payFeesWidget = usePayFeesWidget()
 const alertStore = useAlertStore()
-const loadStore = useLoadingStore()
-loadStore.pageLoading = true
+const pageLoading = useState('page-loading')
 
 useHead({
   title: t('page.annualReport.title')
@@ -109,7 +108,7 @@ async function submitAnnualReport (event: FormSubmitEvent<any>) {
 
     // submit filing
     const { paymentToken, filingId, payStatus } = await arStore.submitAnnualReportFiling(arFiling)
-    if (payStatus === 'PAID') {
+    if (payStatus === 'PAID') { // redirect to final page if payStatus comes back as paid (PAD accounts)
       return navigateTo(localePath(`/submitted?filing_id=${filingId}`))
     } else {
       // redirect to pay with the returned token and filing id
@@ -151,6 +150,7 @@ watch(selectedRadio, (newVal) => {
 if (import.meta.client) {
   alertStore.$reset() // reset alerts when page mounts
   try {
+    pageLoading.value = true
     // load fees for fee widget, might move into earlier setup
     addBarPayFees()
     // try to prefill form if a filing exists
@@ -181,13 +181,13 @@ if (import.meta.client) {
     }
   } catch { // silently handle errors
   } finally {
-    loadStore.pageLoading = false
+    pageLoading.value = false
   }
 }
 </script>
 <template>
   <ClientOnly>
-    <div v-show="!loadStore.pageLoading" class="relative mx-auto flex w-full max-w-[1360px] flex-col gap-4 text-left sm:gap-4 md:flex-row md:gap-6">
+    <div v-show="!pageLoading" class="relative mx-auto flex w-full max-w-[1360px] flex-col gap-4 text-left sm:gap-4 md:flex-row md:gap-6">
       <div class="flex w-full flex-col gap-6">
         <SbcPageSectionH1 :heading="$t('page.annualReport.h1', { year: busStore.currentBusiness.nextARYear})" />
 
@@ -237,7 +237,7 @@ if (import.meta.client) {
                   >
                     <UIcon
                       name="i-mdi-info-outline"
-                      class="size-6 shrink-0 text-bcGovColor-activeBlue"
+                      class="size-6 shrink-0 text-bcGovColor-activeBlue [@media(pointer:coarse)]:hidden"
                     />
                   </UTooltip>
                 </div>

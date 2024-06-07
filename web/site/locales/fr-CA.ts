@@ -35,6 +35,10 @@ export default {
     'ar-submit-error': {
       title: 'Erreur de Soumission',
       description: "Une erreur s'est produite lors du traitement de votre demande. Veuillez confirmer vos informations et réessayer. Si le problème persiste, contactez le support pour obtenir de l'aide."
+    },
+    'create-account': {
+      title: 'Erreur de Création de Compte',
+      description: "Veuillez vérifier vos coordonnées et réessayer. Si le problème persiste, veuillez contacter le support pour obtenir de l'aide."
     }
   },
   btn: {
@@ -196,7 +200,7 @@ export default {
       h1: 'Rapport Annuel {year}',
       h2: 'Rapport Annuel pour: {name}',
       reviewAndConfirm: 'Veuillez confirmer les adresses des bureaux et les administrateurs actuels ci-dessous.',
-      form: {
+      form: { // TODO: review annual report form translations
         agmStatus: {
           question: "Le statut de l'Assemblée Générale Annuelle (AGA) {year} de cette entreprise",
           tooltip: "La collecte d'informations sur l'AGA nous aide à mieux calculer les dates de prolongation de l'AGA et les changements de lieu. Cela permet également de garantir que votre entreprise reste conforme et en règle.",
