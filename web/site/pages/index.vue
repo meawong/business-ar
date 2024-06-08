@@ -27,6 +27,11 @@ definePageMeta({
 // init page function to be able to return navigateTo instead of await, smoother UX
 async function initPage () {
   try {
+    // return if user redirected from tos page
+    if (route.query.fromTos) {
+      pageLoading.value = false // only set false if not navigating to new page
+      return
+    }
     pageLoading.value = true
     alertStore.$reset()
     // get business task is user is logged in (user was redirected after keycloak login)
