@@ -12,12 +12,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """This model manages an AR Invitation item."""
+from datetime import timezone
 from sqlalchemy import func
 
 from .base_model import BaseModel
 from .db import db
 from business_ar_api.common.enum import auto
 from business_ar_api.common.enum import BaseEnum
+from business_ar_api.utils.legislation_datetime import LegislationDatetime
 
 
 class Invitations(BaseModel):  # pylint: disable=too-many-instance-attributes
@@ -67,3 +69,21 @@ class Invitations(BaseModel):  # pylint: disable=too-many-instance-attributes
     def find_invitation_by_token(cls, token):
         """Find an AR invitation record that matches the token."""
         return cls.query.filter_by(token=token).first()
+
+    def json(self):
+        """Return the invitation json."""
+        invitation_json = {
+            "invitationId": self.id,
+            "recipients": self.recipients,
+            "status": self.status,
+            "sentDate": (
+                LegislationDatetime.as_legislation_timezone_from_date(self.sent_date)
+                .astimezone(timezone.utc)
+                .isoformat()
+                if self.sent_date
+                else None
+            ),
+            "message": self.message,
+        }
+
+        return invitation_json
