@@ -38,12 +38,12 @@ class Invitations(BaseModel):  # pylint: disable=too-many-instance-attributes
 
     id = db.Column(db.Integer, primary_key=True)
     recipients = db.Column(
-        db.String(1000), nullable=False
+        db.String(1000), nullable=False, index=True
     )  # Comma separated value of recipient emails
     message = db.Column(db.String(8000), nullable=False)  # Email content
     sent_date = db.Column(db.DateTime(timezone=True), server_default=func.now())
     token = db.Column(db.String(100), nullable=False)  # Nano id
-    status = db.Column("status", db.String(20), default=Status.DRAFT)
+    status = db.Column("status", db.String(20), default=Status.DRAFT, index=True)
     additional_message = db.Column(db.String(4000), nullable=True)
 
     business_id = db.Column("business_id", db.Integer, db.ForeignKey("business.id"))
