@@ -51,3 +51,19 @@ def get_invitations():
             "message": exception.message,
         }, exception.status_code
     return response, status
+
+
+@bp.route("/<int:invitation_id>", methods=["DELETE"])
+@cross_origin(origin="*")
+@_jwt.has_one_of_roles([Role.SYSTEM.value, Role.STAFF.value])
+def expire_invitation(invitation_id):
+    """Expires an invitation."""
+    try:
+        InvitationService.expire_invitation(invitation_id=invitation_id)
+        response, status = {}, HTTPStatus.OK
+    except BusinessException as exception:
+        response, status = {
+            "code": exception.code,
+            "message": exception.message,
+        }, exception.status_code
+    return response, status

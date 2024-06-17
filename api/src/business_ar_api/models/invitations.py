@@ -42,6 +42,7 @@ class Invitations(BaseModel):  # pylint: disable=too-many-instance-attributes
     )  # Comma separated value of recipient emails
     message = db.Column(db.String(8000), nullable=False)  # Email content
     sent_date = db.Column(db.DateTime(timezone=True), server_default=func.now())
+    expiration_date = db.Column(db.DateTime(timezone=True), nullable=True)
     token = db.Column(db.String(100), nullable=False)  # Nano id
     status = db.Column("status", db.String(20), default=Status.DRAFT, index=True)
     additional_message = db.Column(db.String(4000), nullable=True)
