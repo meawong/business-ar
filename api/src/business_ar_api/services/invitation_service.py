@@ -32,6 +32,7 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 """Invitation Service."""
+from datetime import datetime
 from flask import current_app
 from sqlalchemy import String, and_, desc, func, or_
 from typing import Dict
@@ -116,3 +117,13 @@ class InvitationService:
         business: BusinessModel = item[1]
         result = {**business.json(), **invitation.json()}
         return result
+
+    @classmethod
+    def expire_invitation(cls, invitation_id: int) -> InvitationsModel:
+        """Expires an invitation."""
+        invitation = InvitationsModel.find_invitation_by_id(invitation_id=invitation_id)
+        if invitation.status == InvitationsModel.Status.EXPIRED:
+            return
+        invitation.status = InvitationsModel.Status.EXPIRED
+        invitation.expiration_date = datetime.utcnow()
+        invitation.save()
