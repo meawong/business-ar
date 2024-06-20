@@ -75,7 +75,8 @@ export default {
     accountOptions: "Menu d'options pour Compte",
     accept: 'Accepter',
     decline: 'Déclin',
-    close: 'Fermer'
+    close: 'Fermer',
+    openHelpDocs: "Lire la Vue d'Ensemble"
   },
   currency: {
     cad: 'CAD',
@@ -257,6 +258,9 @@ export default {
         title: "Refuser les Conditions d'Utilisation",
         content: "En refusant les Conditions d'Utilisation, vous ne pourrez pas continuer à utiliser ce service. Veuillez accepter les Conditions d'Utilisation pour continuer."
       }
+    },
+    help: { // TODO: review help page translations
+      title: "Vue d'Ensemble du Rapport Annuel - Rapport Annuel de Service CB"
     }
   },
   widgets: {
