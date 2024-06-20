@@ -19,11 +19,11 @@ on:
         - prod
 
 jobs:
-  business-ar-cd:
+  business-ar-admin-cd:
     uses: bcgov/bcregistry-sre/.github/workflows/frontend-cd.yaml@main
     with:
       target: ${{ inputs.target }}
-      app_name: "business-ar-ui"
+      app_name: "business-ar-admin-ui"
       working_directory: "./web/admin"
     secrets:
       WORKLOAD_IDENTIFY_POOLS_PROVIDER: ${{ secrets.WORKLOAD_IDENTIFY_POOLS_PROVIDER }}
