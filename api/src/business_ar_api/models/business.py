@@ -47,7 +47,7 @@ class Business(BaseModel):
     tax_id = db.Column("tax_id", db.String(15), index=True)
     nano_id = db.Column("nano_id", db.String(25), index=True)
 
-    filings = db.relationship("Filing", lazy="dynamic")
+    filings = db.relationship("Filing", lazy="dynamic", backref="business")
     invitations = db.relationship("Invitations", lazy="dynamic")
 
     @classmethod
