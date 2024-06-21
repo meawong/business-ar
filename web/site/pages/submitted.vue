@@ -47,6 +47,13 @@ if (import.meta.client) {
         class="size-10 shrink-0 text-outcomes-approved"
       />
     </SbcPageSectionH1>
-    <SbcNuxtContentCard id="submitted" />
+    <SbcAlert
+      :show-on-category="[
+        AlertCategory.INTERNAL_SERVER_ERROR,
+        AlertCategory.DOCUMENT_DOWNLOAD
+      ]"
+    />
+    <SbcNuxtContentCard id="submitted-success-text" route-suffix="/success-text" />
+    <SbcNuxtContentCard id="submitted-platform-info" route-suffix="/platform-info" />
   </div>
 </template>

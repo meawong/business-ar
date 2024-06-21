@@ -47,6 +47,10 @@ export default {
     'filing-in-progress': {
       title: 'Soumission en Cours',
       description: 'Votre soumission a été payée et est actuellement en cours de traitement.'
+    },
+    'document-download': {
+      title: 'Échec du Téléchargement',
+      description: 'Impossible de télécharger le document pour le moment. Veuillez réessayer ou contacter le support si le problème persiste.'
     }
   },
   btn: {
@@ -76,7 +80,9 @@ export default {
     accept: 'Accepter',
     decline: 'Déclin',
     close: 'Fermer',
-    openHelpDocs: "Lire la Vue d'Ensemble"
+    openHelpDocs: "Lire la Vue d'Ensemble",
+    downloadReceipt: 'Télécharger le Reçu',
+    downloadReport: 'Télécharger le Rapport'
   },
   currency: {
     cad: 'CAD',
