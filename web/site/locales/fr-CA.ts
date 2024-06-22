@@ -51,6 +51,10 @@ export default {
     'document-download': {
       title: 'Échec du Téléchargement',
       description: 'Impossible de télécharger le document pour le moment. Veuillez réessayer ou contacter le support si le problème persiste.'
+    },
+    'future-effective-filings': {
+      title: 'Dépôt en Attente Trouvé',
+      description: 'Il y a un dossier en attente pour cette entreprise trouvé dans CorporateOnLine qui doit être complété avant que vous puissiez poursuivre cette tâche. Veuillez revenir une fois ce dépôt terminé.'
     }
   },
   btn: {

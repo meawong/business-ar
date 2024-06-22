@@ -51,6 +51,10 @@ export default {
     'document-download': {
       title: 'Download Failed',
       description: 'Unable to download the document at this time. Please try again or contact support if the issue persists.'
+    },
+    'future-effective-filings': {
+      title: 'Pending Filing Found',
+      description: 'There is a pending filing for this business found in CorporateOnLine that needs to be completed before you can proceed with this task. Please return after that filing has been completed.'
     }
   },
   btn: {
