@@ -56,14 +56,6 @@ class Business(BaseModel):
     invitations = db.relationship("Invitations", lazy="dynamic")
 
     @classmethod
-    def find_by_nano_id(cls, nano_id: str):
-        """Return a Business by the nano_id."""
-        business = None
-        if nano_id:
-            business = cls.query.filter_by(nano_id=nano_id).one_or_none()
-        return business
-
-    @classmethod
     def find_by_identifier(cls, identifier: str):
         """Return a Business by identifier."""
         business = None
