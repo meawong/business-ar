@@ -45,7 +45,12 @@ class Business(BaseModel):
     legal_type = db.Column("legal_type", db.String(10))
     identifier = db.Column("identifier", db.String(10), index=True)
     tax_id = db.Column("tax_id", db.String(15), index=True)
-    nano_id = db.Column("nano_id", db.String(25), index=True)
+    email = db.Column("email", db.String(1000), index=True)
+    founding_date = db.Column("founding_date", db.DateTime(timezone=True))
+    last_ar_reminder_date = db.Column(
+        "last_ar_reminder_date", db.DateTime(timezone=True)
+    )
+    ar_reminder_flag = db.Column("ar_reminder_flag", db.Boolean, default=True)
 
     filings = db.relationship("Filing", lazy="dynamic", backref="business")
     invitations = db.relationship("Invitations", lazy="dynamic")
