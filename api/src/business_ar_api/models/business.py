@@ -47,9 +47,7 @@ class Business(BaseModel):
     tax_id = db.Column("tax_id", db.String(15), index=True)
     email = db.Column("email", db.String(1000), index=True)
     founding_date = db.Column("founding_date", db.DateTime(timezone=True))
-    last_ar_reminder_date = db.Column(
-        "last_ar_reminder_date", db.DateTime(timezone=True)
-    )
+    last_ar_reminder_year = db.Column("last_ar_reminder_year", db.Integer)
     ar_reminder_flag = db.Column("ar_reminder_flag", db.Boolean, default=True)
 
     filings = db.relationship("Filing", lazy="dynamic", backref="business")
