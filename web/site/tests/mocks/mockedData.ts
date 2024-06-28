@@ -68,7 +68,7 @@ export const mockNewAccount = {
   uuid: 'uuid3'
 }
 
-export const mockedArFilingResponse: ArFilingResponse = {
+export const mockedArFilingResponse: ArFiling = {
   filing: {
     annualReport: {
       annualGeneralMeetingDate: '2024-04-30',
@@ -201,7 +201,7 @@ export const mockFilingData: FilingData = {
   futureEffective: false
 }
 
-export const mockAddress: Address = {
+export const mockAddress: BusinessAddress = {
   actions: [],
   addressCity: 'Victoria',
   addressCountry: 'Canada',
