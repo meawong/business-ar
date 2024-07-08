@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { FormError, FormSubmitEvent } from '#ui/types'
 import { handleFormErrorEvent } from '~/utils/form/handleFormErrorEvent'
-import { UCheckbox, UTooltip, UForm } from '#components'
+import { UCheckbox, UForm } from '#components'
 const { t } = useI18n()
 const localePath = useLocalePath()
 const keycloak = useKeycloak()
@@ -37,7 +37,6 @@ const options = [
 
 const arFormRef = ref<InstanceType<typeof UForm> | null>(null)
 const checkboxRef = ref<InstanceType<typeof UCheckbox> | null>(null)
-const tooltipRef = ref<InstanceType<typeof UTooltip> | null>(null)
 const selectedRadio = ref<string | null>(null)
 
 // form state
@@ -221,33 +220,29 @@ if (import.meta.client) {
             @error="handleFormErrorEvent"
           >
             <UFormGroup name="radioGroup">
+              <!-- label for visual -->
               <template #label>
-                <div class="flex items-start gap-1">
-                  <span>{{ $t('page.annualReport.form.agmStatus.question', { year: busStore.currentBusiness.nextARYear }) }}</span>
-                  <!-- TODO: investigate better i18n/mobile tooltip options -->
-                  <UTooltip
-                    ref="tooltipRef"
-                    :text="$t('page.annualReport.form.agmStatus.tooltip')"
-                    :popper="{ arrow: true, placement: 'auto' }"
-                    tabindex="0"
-                    @focus="() => tooltipRef?.onMouseEnter()"
-                    @blur="() => tooltipRef?.onMouseLeave()"
-                  >
-                    <UIcon
-                      name="i-mdi-info-outline"
-                      class="size-6 shrink-0 text-bcGovColor-activeBlue [@media(pointer:coarse)]:hidden"
-                    />
-                  </UTooltip>
-                </div>
+                <span>{{ $t('page.annualReport.form.agmStatus.question', { year: busStore.currentBusiness.nextARYear }) }}
+                  <SbcTooltip id="agm-status-tooltip" :text="$t('page.annualReport.form.agmStatus.tooltip')" />
+                </span>
               </template>
-
-              <URadioGroup
-                v-model="selectedRadio"
-                :legend="$t('page.annualReport.form.agmStatus.question', { year: busStore.currentBusiness.nextARYear })"
-                :options
-                :ui="{ fieldset: 'space-y-2', legend: 'sr-only' }"
-                :ui-radio="{ label: 'text-base font-medium text-bcGovColor-midGray dark:text-gray-200', wrapper: 'relative flex items-center' }"
-              />
+              <fieldset>
+                <!-- legend for accessibility -->
+                <legend class="sr-only">
+                  {{ $t('page.annualReport.form.agmStatus.question', { year: busStore.currentBusiness.nextARYear }) }}
+                </legend>
+                <!-- use radio instead of radio group, allows aria-describedby property -->
+                <div class="space-y-1">
+                  <URadio
+                    v-for="option in options"
+                    :key="option.value"
+                    v-model="selectedRadio"
+                    v-bind="option"
+                    aria-describedby="agm-status-tooltip"
+                    :ui="{ label: 'text-base font-medium text-bcGovColor-midGray dark:text-gray-200', wrapper: 'relative flex items-center' }"
+                  />
+                </div>
+              </fieldset>
             </UFormGroup>
 
             <!-- AGM Date -->
@@ -278,7 +273,19 @@ if (import.meta.client) {
               :ui="{ description: 'mt-1 text-sm leading-4 opacity-90 text-bcGovColor-midGray', variant: { subtle: 'ring-2' }, rounded: 'rounded-none' }"
             >
               <template #description>
-                <SbcI18nBold translation-path="page.annualReport.form.complianceWarning" />
+                <div class="flex flex-col gap-1">
+                  <SbcI18nBold translation-path="page.annualReport.form.complianceWarning.main" />
+                  <i18n-t keypath="page.annualReport.form.complianceWarning.link" tag="span" scope="global">
+                    <template #link>
+                      <a class="text-sm text-bcGovBlue-500 underline" target="_blank" href="https://www.bclaws.gov.bc.ca/civix/document/id/complete/statreg/02057_06#section182">
+                        Business Corporations ACT
+                      </a>
+                      <span class="ml-1 inline-flex pb-1 align-middle">
+                        <UIcon name="i-mdi-open-in-new" class="size-4 shrink-0 text-bcGovBlue-500" />
+                      </span>
+                    </template>
+                  </i18n-t>
+                </div>
               </template>
             </UAlert>
 
@@ -304,7 +311,8 @@ if (import.meta.client) {
         </SbcPageSectionCard>
 
         <h2 class="text-lg font-semibold text-bcGovColor-darkGray">
-          {{ $t('page.annualReport.reviewAndConfirm') }}
+          {{ $t('page.annualReport.reviewAndConfirm.main') }}
+          <SbcTooltip :text="$t('page.annualReport.reviewAndConfirm.help')" />
         </h2>
 
         <SbcPageSectionCard
@@ -339,9 +347,7 @@ if (import.meta.client) {
               v-model="arData.officeAndDirectorsConfirmed"
             >
               <template #label>
-                <span>{{ $t('words.i') }}</span>
-                <span class="mx-1 font-semibold">{{ parseSpecialChars(keycloak.kcUser.value.fullName, 'USER').toLocaleUpperCase($i18n.locale) }}</span>
-                <span>{{ $t('page.annualReport.form.certify.question') }}</span>
+                <SbcI18nBold translation-path="page.annualReport.form.certify.question" :name="parseSpecialChars(keycloak.kcUser.value.fullName, 'USER').toLocaleUpperCase($i18n.locale)" />
               </template>
             </UCheckbox>
           </UFormGroup>
