@@ -235,12 +235,12 @@ export default {
       h2: 'Rapport Annuel pour: {name}',
       reviewAndConfirm: {
         main: 'Veuillez consulter les adresses des bureaux et les administrateurs actuels ci-dessous. Ces informations doivent être correctes avant de continuer.',
-        help: 'Accédez à Corporate Online pour mettre à jour les adresses de vos bureaux et celles de vos administrateurs, puis revenez ici pour déposer votre rapport annuel. Si une adresse de bureau a été mise à jour, vous devrez attendre le lendemain pour compléter votre rapport annuel.'
+        help: 'Pour mettre à jour les adresses de vos bureaux et vos administrateurs, visitez Corporate Online. Attendez jusqu'à un jour ouvrable pour que les changements prennent effet avant de revenir ici pour déposer votre rapport annuel.'
       },
       form: { // TODO: review annual report form translations
         agmStatus: {
           question: "Le statut de l'Assemblée Générale Annuelle (AGA) {year} de cette entreprise",
-          tooltip: "La collecte d'informations sur l'AGA nous aide à mieux calculer les dates de prolongation de l'AGA et les changements de lieu. Cela permet également de garantir que votre entreprise reste conforme et en règle.",
+          tooltip: "Les informations sur les AGA sont utilisées pour calculer les dates des prolongations et les changements de lieu des AGA. Cela aide aussi à s'assurer que votre entreprise reste conforme et en règle.",
           opt1: 'Notre AGA {year} a eu lieu',
           opt2: 'Notre AGA {year} aura lieu',
           opt3: "Le conseil d'administration a voté contre la tenue de notre AGA {year}",
@@ -259,7 +259,7 @@ export default {
           error: "Vous devez sélectionner une date de résolution si le conseil d'administration a voté pour ne pas tenir d'AGA."
         },
         complianceWarning: {
-          main: "{boldStart}Important:{boldEnd} Veuillez vous assurer que vous respectez les exigences de l'AGA avant de déposer votre rapport annuel.",
+          main: "{boldStart}Important:{boldEnd} En général, les entreprises tiennent des AGA chaque année. Consultez la Business Corporations Act (Section 182) pour vous assurer de respecter les exigences législatives.",
           link: "Consultez la {link} pour plus d'informations."
         },
         certify: {
