@@ -235,12 +235,12 @@ export default {
       h2: 'Annual Report for: {name}',
       reviewAndConfirm: {
         main: 'Please review the office addresses and current directors below. This information needs to be correct before you proceed.',
-        help: 'Go to Corporate Online to update your office addresses and directors, then come back here to file your annual report. If an office address was updated, you will need to wait until the next day to complete your annual report.'
+        help: 'To update your office addresses and directors, visit Corporate Online. Allow up to one business day for changes to take effect before returning here to file your annual report.'
       },
       form: {
         agmStatus: {
           question: 'The {year} Annual General Meeting (AGM) status of this business',
-          tooltip: 'Gathering AGM information helps us better calculate dates for AGM extensions and location changes. It also helps ensure your business stays compliant and in good standing.',
+          tooltip: 'AGM information is used to calculate dates for AGM extensions and location changes. It also helps ensure your business stays compliant and in good standing.',
           opt1: 'Our {year} AGM was held',
           opt2: 'Our {year} AGM is to be held',
           opt3: 'The board voted to not hold our {year} AGM',
@@ -259,7 +259,7 @@ export default {
           error: 'You must select a resolution date if the board voted to not hold an AGM'
         },
         complianceWarning: {
-          main: '{boldStart}Important:{boldEnd} Please ensure that you meet the AGM compliance before filing your annual report.',
+          main: '{boldStart}Important:{boldEnd} Generally, companies hold AGMs every year. Review the <a href="https://www.bclaws.gov.bc.ca/civix/document/id/complete/statreg/02057_06#section182" target="_blank">Business Corporations Act (Section 182)</a> to make sure you meet the legislative requirements.',
           link: 'See the {link} for more information.'
         },
         certify: {
