@@ -28,7 +28,7 @@ Vous êtes maintenant prêt à déposer votre rapport annuel. Vous arriverez sur
   - Notre AGA doit se tenir
   - Le conseil a voté pour ne pas tenir d'AGA
 - Pour plus d'informations sur les assemblées générales annuelles, veuillez consulter la section ci-dessous.
-- Examiner et confirmer les adresses et les administrateurs avant de certifier et de déposer votre rapport annuel. Si vous devez mettre à jour l'adresse de votre entreprise et/ou les administrateurs, vous devrez vous rendre sur [Corporate Online](https://www.corporateonline.gov.bc.ca) pour effectuer ces modifications d'abord.
+- Examiner et confirmer les adresses et les administrateurs avant de certifier et de déposer votre rapport annuel. Si vous devez mettre à jour l'adresse de votre entreprise et/ou les administrateurs, vous devrez vous rendre sur <a href="https://www.corporateonline.gov.bc.ca" target="_blank">Corporate Online</a> pour effectuer ces modifications d'abord.
 
 ## Vous voulez en savoir plus sur les assemblées générales annuelles (AGA) ?
 Ce qui est couvert dans une AGA :
@@ -42,7 +42,7 @@ Les entreprises enregistrées en Colombie-Britannique sont tenues de tenir une A
 
 Si votre entreprise est nouvellement enregistrée en Colombie-Britannique, votre première AGA doit avoir lieu au plus tard 18 mois après la date de son enregistrement en Colombie-Britannique.
 
-Le rapport annuel demande le statut de votre AGA pour aider votre entreprise à rester conforme aux exigences de la [Loi sur les sociétés de la Colombie-Britannique](https://www.bclaws.gov.bc.ca/civix/document/id/complete/statreg/02057_00_multi).
+Le rapport annuel demande le statut de votre AGA pour aider votre entreprise à rester conforme aux exigences de la<a href="https://www.bclaws.gov.bc.ca/civix/document/id/complete/statreg/02057_00_multi" target="_blank"> Loi sur les sociétés de la Colombie-Britannique</a>.
 
 ## Paiement et confirmation de dépôt
 Vous serez redirigé vers le site PayBC pour fournir vos informations de paiement. Une fois votre paiement terminé, vous verrez une page de confirmation indiquant que votre rapport annuel a été déposé avec succès, suivie d'un courriel contenant une copie de votre dépôt et un reçu envoyé à l'adresse électronique de contact enregistrée.
