@@ -26,6 +26,7 @@ const { data } = await useAsyncData(fullId, () => {
 }, {
   watch: [locale, routeWithoutLocale]
 })
+
 </script>
 <template>
   <UCard class="w-full" :data-testid="fullId">
