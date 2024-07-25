@@ -19,14 +19,12 @@ const props = defineProps({
 const fullId = 'content-data-' + props.id
 
 // Fetch the content data based on the current locale and route
-const { data, refresh } = await useAsyncData(fullId, () => {
+const { data } = await useAsyncData(fullId, () => {
   return queryContent()
     .where({ _locale: locale.value, _path: { $eq: routeWithoutLocale.value + props.routeSuffix } })
     .findOne()
-})
-// Watch locale changes and refresh content data when the locale changes
-watch(locale, () => {
-  refresh()
+}, {
+  watch: [locale, routeWithoutLocale]
 })
 </script>
 <template>
