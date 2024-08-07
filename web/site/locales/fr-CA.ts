@@ -249,7 +249,7 @@ export default {
           tooltip: "Les informations sur les AGA sont utilisées pour calculer les dates des prolongations et les changements de lieu des AGA. Cela aide aussi à s'assurer que votre entreprise reste conforme et en règle.",
           opt1: 'Notre AGA {year} a eu lieu',
           opt2: 'Notre AGA {year} aura lieu',
-          opt3: "Notre AGA {year} est dispensée, considérée comme tenue",
+          opt3: 'Notre AGA {year} est dispensée, considérée comme tenue',
           error: "Veuillez sélectionner un statut d'AGA pour continuer"
         },
         agmDate: {
