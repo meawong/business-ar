@@ -12,6 +12,20 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# Copyright 2022 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
 apiVersion: deploy.cloud.google.com/v1
 kind: DeliveryPipeline
 metadata:
@@ -28,10 +42,10 @@ serialPipeline:
    - values:
       deploy-env: "development"
       deploy-project-id: "a083gt-dev"
-      service-name: "business-ar-reminder-dev"
-      container-name: "business-ar-reminder-dev"
+      job-name: "business-ar-reminder-dev"
       cloudsql-instances: "a083gt-dev:northamerica-northeast1:businesses-db-dev"
-      service-account: "sa-api@a083gt-dev.iam.gserviceaccount.com"
+      run-command: "./run.sh"
+      service-account: "sa-job@a083gt-dev.iam.gserviceaccount.com"
  - targetId: a083gt-test
    profiles: [test]
    strategy:
@@ -39,12 +53,12 @@ serialPipeline:
       verify: false
    deployParameters:
    - values:
-      deploy-env: "test"
+      deploy-env: "development"
       deploy-project-id: "a083gt-test"
-      service-name: "business-ar-reminder-test"
-      container-name: "business-ar-reminder-test"
+      job-name: "business-ar-reminder-test"
       cloudsql-instances: "a083gt-test:northamerica-northeast1:businesses-db-test"
-      service-account: "sa-api@a083gt-test.iam.gserviceaccount.com"
+      run-command: "./run.sh"
+      service-account: "sa-job@a083gt-test.iam.gserviceaccount.com"
  - targetId: a083gt-sandbox
    profiles: [sandbox]
    strategy:
@@ -54,10 +68,10 @@ serialPipeline:
    - values:
       deploy-env: "sandbox"
       deploy-project-id: "a083gt-integration"
-      service-name: "business-ar-reminder-sandbox"
-      container-name: "business-ar-reminder-sandbox"
+      job-name: "business-ar-reminder-sandbox"
       cloudsql-instances: "a083gt-integration:northamerica-northeast1:businesses-db-sandbox"
-      service-account: "sa-api@a083gt-integration.iam.gserviceaccount.com"
+      run-command: "./run.sh"
+      service-account: "sa-job@a083gt-integration.iam.gserviceaccount.com"
  - targetId: a083gt-prod
    profiles: [prod]
    strategy:
@@ -67,9 +81,7 @@ serialPipeline:
    - values:
       deploy-env: "production"
       deploy-project-id: "a083gt-prod"
-      service-name: "business-ar-reminder-prod"
-      container-name: "business-ar-reminder-prod"
+      job-name: "business-ar-reminder-prod"
       cloudsql-instances: "a083gt-prod:northamerica-northeast1:businesses-db-prod"
-      service-account: "sa-api@a083gt-prod.iam.gserviceaccount.com"
-      max-scale: "10"
-      container-concurrency: "20"
+      run-command: "./run.sh"
+      service-account: "sa-job@a083gt-prod.iam.gserviceaccount.com"
