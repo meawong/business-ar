@@ -17,12 +17,10 @@ import logging
 import os
 from datetime import datetime
 from pathlib import Path
-import base64
 
-import sentry_sdk
 from flask import Flask
 from jinja2 import Template
-from sentry_sdk.integrations.logging import LoggingIntegration
+from nanoid import generate
 from sqlalchemy.sql.expression import text  # noqa: I001
 
 from ar_reminder.config import CONFIGURATION
@@ -31,11 +29,8 @@ from business_ar_api.models import AnnualReportReminder, Business, db
 from business_ar_api.services import AccountService
 from business_ar_api.services.business_service import BusinessService
 from business_ar_api.services.rest_service import RestService
-from nanoid import generate
 
 setup_logging(os.path.join(os.path.abspath(os.path.dirname(__file__)), "logging.conf"))
-
-SENTRY_LOGGING = LoggingIntegration(event_level=logging.ERROR)  # send errors as events
 
 
 def create_app(run_mode=os.getenv("FLASK_ENV", "production")):
@@ -43,9 +38,6 @@ def create_app(run_mode=os.getenv("FLASK_ENV", "production")):
     app = Flask(__name__)
     app.config.from_object(CONFIGURATION[run_mode])
     db.init_app(app)
-    # Configure Sentry
-    if app.config.get("SENTRY_DSN", None):
-        sentry_sdk.init(dsn=app.config.get("SENTRY_DSN"), integrations=[SENTRY_LOGGING])
 
     register_shellcontext(app)
 
@@ -62,9 +54,7 @@ def register_shellcontext(app):
     app.shell_context_processor(shell_context)
 
 
-def _process_and_send_email(
-    app: Flask, token: str, business: Business, fiscal_year: int, filled_template
-):
+def _process_and_send_email(app: Flask, token: str, business: Business, fiscal_year: int, filled_template):
     try:
         recipient = business.email
         nano_id = generate()
@@ -76,26 +66,18 @@ def _process_and_send_email(
             "token": nano_id,
             "access_url": access_url,
             "ar_start_date": business.founding_date,
-            "bc_number": business.identifier
+            "bc_number": business.identifier,
         }
 
         html_out = email_template.render(email_kwargs)
-        with open(f"{app.config.get('EMAIL_TEMPLATE_PATH')}/assets/ServiceBC-BCROS_CROP_H_RGB_pos.jpg", "rb") as image_file:
-            encoded_image = base64.b64encode(image_file.read()).decode()
+
         email_dict = {
             "recipients": recipient,
             "content": {
                 "subject": "Annual Report Reminder",
                 "body": html_out,
-                "attachments": [
-                    {
-                        "fileName": "logo.jpg",
-                        "fileContent": encoded_image,
-                        "contentType": "image/jpeg",
-                        "contentId": "logo"
-                    }
-                ],
-            },
+                "attachments": []
+            }
         }
 
         if email_dict:
@@ -112,9 +94,7 @@ def _process_and_send_email(
             ar_reminder.save()
 
     except Exception as exception:
-        app.logger.error(
-            f"Failed to send reminder for business {business.identifier}", exception
-        )
+        app.logger.error(f"Failed to send reminder for business {business.identifier}", exception)
         raise exception
 
 
@@ -134,33 +114,27 @@ def run():
             client_id = application.config.get("NOTIFY_API_SVC_CLIENT_ID")
             client_secret = application.config.get("NOTIFY_API_SVC_CLIENT_SECRET")
             token = AccountService.get_service_client_token(client_id, client_secret)
-            filled_template = Path(
-                f"{application.config.get('EMAIL_TEMPLATE_PATH')}/ar_reminder.html"
-            ).read_text()
+            filled_template = Path(f"{application.config.get('EMAIL_TEMPLATE_PATH')}/ar_reminder.html").read_text(
+                encoding="utf-8"
+            )
 
             businesses = _get_businesses()
             for business in businesses:
                 try:
                     application.logger.info(
-                        "Business: {}, Last AR Reminder Year: {}".format(
-                            business.identifier, business.last_ar_reminder_year
-                        )
+                        "Business: %s, Last AR Reminder Year: %s",
+                        business.identifier,
+                        business.last_ar_reminder_year,
                     )
                     if business.last_ar_reminder_year:
                         next_ar_reminder_year = business.last_ar_reminder_year + 1
                     else:
-                        business_details = (
-                            BusinessService.get_business_details_from_colin(
-                                business.identifier, business.legal_type, business.id
-                            )
+                        business_details = BusinessService.get_business_details_from_colin(
+                            business.identifier, business.legal_type, business.id
                         )
-                        next_ar_reminder_year = int(
-                            business_details.get("business").get("nextARYear")
-                        )
+                        next_ar_reminder_year = int(business_details.get("business").get("nextARYear"))
                     current_year = datetime.utcnow().year
-                    application.logger.info(
-                        "Next AR year : {}".format(next_ar_reminder_year)
-                    )
+                    application.logger.info("Next AR year: %s", next_ar_reminder_year)
                     if next_ar_reminder_year > current_year:
                         business.last_ar_reminder_year = current_year
                         business.save()
@@ -174,24 +148,24 @@ def run():
                     )
                     business.last_ar_reminder_year = next_ar_reminder_year
                     business.save()
-                except Exception as err:
-                    application.logger.error(err)
-        except Exception as err:
-            application.logger.error(err)
+                except KeyError as err:
+                    application.logger.error(
+                        "Error processing business %s: %s",
+                        business.identifier,
+                        str(err),
+                    )
+        except KeyError as err:
+            application.logger.error("General error occurred: %s", str(err))
 
 
 def _get_businesses():
     where_clause = text(
-        "state='ACT' and ar_reminder_flag is true and (date_part('doy', founding_date) between date_part('doy', current_Date) and "
-        + "date_part('doy', current_Date + interval '14 days')) and (last_ar_reminder_year is NULL "
-        + "or last_ar_reminder_year < extract(year from current_date))"
+        "state='ACT' and ar_reminder_flag is true and "
+        "(date_part('doy', founding_date) between date_part('doy', current_Date) and "
+        "date_part('doy', current_Date + interval '14 days')) and "
+        "(last_ar_reminder_year is NULL or last_ar_reminder_year < extract(year from current_date))"
     )
-    businesses = (
-        db.session.query(Business)
-        .filter(where_clause)
-        .order_by(Business.founding_date)
-        .limit(25)
-        .all()
-    )
+
+    businesses = db.session.query(Business).filter(where_clause).order_by(Business.founding_date).limit(25).all()
 
     return businesses
