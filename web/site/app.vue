@@ -18,15 +18,27 @@ useHead({
 const appVersion = await getAppMetaInfo() // load ui and api version on app mount
 
 // Query help markdown and globally provide it for use in either pages/help.vue or <SbcHelpModal />
-const { data: helpDocs } = await useAsyncData('help-docs-query', () => {
+const { data: contentDocs } = await useAsyncData('content-docs-query', () => {
   return queryContent()
-    .where({ _locale: locale.value, _path: { $eq: '/help' } })
-    .findOne()
+    .where({ _locale: locale.value })
+    .find()
 }, {
   watch: [locale]
 })
 
+const helpDocs = computed(() =>
+  contentDocs.value?.find(doc => doc._path === '/help')
+)
+const index1 = computed(() =>
+  contentDocs.value?.find(doc => doc._path === '/index/1')
+)
+
+const index2 = computed(() =>
+  contentDocs.value?.find(doc => doc._path === '/index/2')
+)
 provide('sbc-bar-help-docs', helpDocs)
+provide('sbc-bar-index1', index1)
+provide('sbc-bar-index2', index2)
 </script>
 
 <template>
