@@ -32,7 +32,8 @@ from business_ar_api.services.rest_service import RestService
 from ar_reminder.config import CONFIGURATION
 from ar_reminder.utils.logging import setup_logging
 
-setup_logging(os.path.join(os.path.abspath(os.path.dirname(__file__)), "logging.conf"))
+setup_logging(os.path.join(os.path.abspath(
+    os.path.dirname(__file__)), "logging.conf"))
 
 CONTENT_TYPE_JSON = {"Content-Type": "application/json"}
 TIMEOUT = 20
@@ -99,7 +100,8 @@ def _process_and_send_email(app: Flask, token: str, business: Business, fiscal_y
             ar_reminder.save()
 
     except Exception as exception:
-        app.logger.error(f"Failed to send reminder for business {business.identifier}", exception)
+        app.logger.error(f"Failed to send reminder for business {
+                         business.identifier}", exception)
         raise exception
 
 
@@ -123,7 +125,8 @@ def update_ar_indicator_in_colin(app: Flask, legal_type: str, identifier: str, t
         req = requests.post(url, headers=headers, timeout=TIMEOUT)
 
         if req.status_code == HTTPStatus.OK:
-            app.logger.info(f'Successfully updated AR status for corporation {identifier} in Colin.')
+            app.logger.info(f'Successfully updated AR status for corporation {
+                            identifier} in Colin.')
             return True
 
         app.logger.error(
@@ -133,7 +136,8 @@ def update_ar_indicator_in_colin(app: Flask, legal_type: str, identifier: str, t
         return False
 
     except Exception as e:
-        app.logger.error(f'Error updating AR status for corporation {identifier}: {str(e)}')
+        app.logger.error(f'Error updating AR status for corporation {
+                         identifier}: {str(e)}')
         return False
 
 
@@ -143,8 +147,10 @@ def run():
     with application.app_context():
         try:
             client_id = application.config.get("NOTIFY_API_SVC_CLIENT_ID")
-            client_secret = application.config.get("NOTIFY_API_SVC_CLIENT_SECRET")
-            token = AccountService.get_service_client_token(client_id, client_secret)
+            client_secret = application.config.get(
+                "NOTIFY_API_SVC_CLIENT_SECRET")
+            token = AccountService.get_service_client_token(
+                client_id, client_secret)
             filled_template = Path(f"{application.config.get('EMAIL_TEMPLATE_PATH')}/ar_reminder.html").read_text(
                 encoding="utf-8"
             )
@@ -163,23 +169,31 @@ def run():
                         business_details = BusinessService.get_business_details_from_colin(
                             business.identifier, business.legal_type, business.id
                         )
-                        next_ar_reminder_year = int(business_details.get("business").get("nextARYear"))
-                    current_year = datetime.utcnow().year
-                    application.logger.info("Next AR year: %s", next_ar_reminder_year)
-                    if next_ar_reminder_year > current_year:
-                        business.last_ar_reminder_year = current_year
+                        next_ar_reminder_year = int(
+                            business_details.get("business").get("nextARYear"))
+                    # check if it is an admin freeze first. If it is, then skip the processing
+                    adminFreeze = business_details.get(
+                        "business").get("adminFreeze")
+                    application.logger.info("Admin Freeze is: %s", adminFreeze)
+                    if adminFreeze != 'True':
+                        current_year = datetime.utcnow().year
+                        application.logger.info(
+                            "Next AR year: %s", next_ar_reminder_year)
+                        if next_ar_reminder_year > current_year:
+                            business.last_ar_reminder_year = current_year
+                            business.save()
+                            continue
+                        _process_and_send_email(
+                            application,
+                            token,
+                            business,
+                            next_ar_reminder_year,
+                            filled_template,
+                        )
+                        business.last_ar_reminder_year = next_ar_reminder_year
                         business.save()
-                        continue
-                    _process_and_send_email(
-                        application,
-                        token,
-                        business,
-                        next_ar_reminder_year,
-                        filled_template,
-                    )
-                    business.last_ar_reminder_year = next_ar_reminder_year
-                    business.save()
-                    update_ar_indicator_in_colin(application, business.legal_type, business.identifier, token)
+                        update_ar_indicator_in_colin(
+                            application, business.legal_type, business.identifier, token)
                 except Exception as err:
                     application.logger.error(
                         "Error processing business %s: %s",
@@ -198,6 +212,7 @@ def _get_businesses():
         "(last_ar_reminder_year is NULL or last_ar_reminder_year < extract(year from current_date))"
     )
 
-    businesses = db.session.query(Business).filter(where_clause).order_by(Business.founding_date).limit(25).all()
+    businesses = db.session.query(Business).filter(
+        where_clause).order_by(Business.founding_date).limit(25).all()
 
     return businesses
