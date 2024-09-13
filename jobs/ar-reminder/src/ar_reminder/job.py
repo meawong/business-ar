@@ -115,7 +115,8 @@ def send_email(app: Flask, notify_body: dict, token: str):
 
 def update_ar_indicator_in_colin(app: Flask, legal_type: str, identifier: str, token: str):
     """Calls Colin API in Lear: turns off ar reminder flag and insert into set_ar_to_no"""
-    url = f'{app.config["COLIN_API_URL"]}/businesses/{legal_type}/{identifier}/filings/reminder'
+    url = f'{app.config["COLIN_API_URL"]
+             }/businesses/{legal_type}/{identifier}/filings/reminder'
     headers = {
         **CONTENT_TYPE_JSON,
         "Authorization": AuthHeaderType.BEARER.value.format(token),
@@ -175,8 +176,12 @@ def run():
                     # check if it is an admin freeze first. If it is, then skip the processing
                     adminFreeze = business_details.get(
                         "business").get("adminFreeze")
-                    application.logger.info("Admin Freeze is: %s", adminFreeze)
-                    if adminFreeze != 'True':
+                    # also need to check if corpState is in 'LIQ' or not. If it is, then skip the processing
+                    corpState = business_details.get(
+                        "business").get("corpState")
+                    application.logger.info(
+                        "Admin Freeze is: %s, Corp State is:%s ", adminFreeze, corpState)
+                    if adminFreeze != 'True' and corpState != 'LIQ':
                         current_year = datetime.utcnow().year
                         application.logger.info(
                             "Next AR year: %s", next_ar_reminder_year)
