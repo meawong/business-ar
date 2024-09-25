@@ -14,13 +14,16 @@
 """Job to sync business info from colin warehouse to business ar db.
 """
 import os
+import subprocess
+import time
 
 import sqlalchemy
 from business_ar_api.models import Business, db
-from business_sync.config import CONFIGURATION
-from business_sync.utils.logging import setup_logging
 from flask import Flask
 from sqlalchemy.sql.expression import text
+
+from business_sync.config import CONFIGURATION
+from business_sync.utils.logging import setup_logging
 
 setup_logging(os.path.join(os.path.abspath(os.path.dirname(__file__)), "logging.conf"))
 
@@ -33,6 +36,19 @@ def create_app(run_mode=os.getenv("FLASK_ENV", "production")):
     register_shellcontext(app)
 
     return app
+
+
+def start_cloud_sql_proxy(app):
+    """Start a cloud sql proxy"""
+    cmd = [
+        "cloud-sql-proxy",
+        f"--credentials-file={app.config['WAREHOUSE_CREDENTIALS_FILE']}",
+        "--unix-socket=/cloudsql",
+        app.config["AUTH_PROXY_CONNECT"],
+    ]
+    process = subprocess.Popen(cmd)  # pylint: disable=consider-using-with
+    # intentionally avoid using 'with' here to prevent blocking, and manage the subprocess manually.
+    return process
 
 
 def register_shellcontext(app):
@@ -49,6 +65,8 @@ def run():
     """Get the businesses from warehouse that has anniversary in next 2 days and sync the info
     with the Business AR db."""
     application = create_app()
+    start_cloud_sql_proxy(application)
+    time.sleep(5)
     with application.app_context():
         try:
             warehouse_uri = application.config.get("WAREHOUSE_URI")
@@ -61,6 +79,7 @@ def run():
                         SELECT co.corp_num
                             , co.recognition_dts
                             , EXTRACT(YEAR FROM co.last_ar_filed_dt) AS last_ar_filed_year
+                            , co.corp_typ_cd
                             , co.admin_email
                             , cn.CORP_NME
                             , ct.corp_class
@@ -107,15 +126,11 @@ def run():
                     )
                 )
                 results = result_set.all()
-                application.logger.info(
-                    "Number of businesses to update: {}".format(len(results))
-                )
+                application.logger.info("Number of businesses to update: %d", len(results))
                 for row in results:
                     try:
                         identifier = row.corp_num
-                        if row.corp_typ_cd == "BC" and not row.corp_num.startswith(
-                            "BC"
-                        ):
+                        if row.corp_typ_cd == "BC" and not row.corp_num.startswith("BC"):
                             identifier = f"BC{row.corp_num}"
                         business = Business.find_by_identifier(identifier)
                         if not business:
@@ -125,12 +140,8 @@ def run():
                                 founding_date=row.recognition_dts,
                             )
                         business.legal_name = row.corp_name
-                        business.email = (
-                            row.admin_email if env == "production" else "test@email.com"
-                        )
-                        business.ar_reminder_flag = (
-                            False if row.send_ar_ind == "N" else True
-                        )
+                        business.email = row.admin_email if env == "production" else "test@email.com"
+                        business.ar_reminder_flag = row.send_ar_ind != "N"
                         business.state = row.corp_state
                         # business.op_state = row.op_state
                         business.tax_id = row.bn_15
