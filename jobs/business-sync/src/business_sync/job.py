@@ -43,7 +43,7 @@ def start_cloud_sql_proxy(app):
     cmd = [
         "cloud-sql-proxy",
         f"--credentials-file={app.config['WAREHOUSE_CREDENTIALS_FILE']}",
-        f"--address=0.0.0.0",
+        "--address=0.0.0.0",
         f"--port={app.config['WAREHOUSE_DB_PORT']}",
         app.config["AUTH_PROXY_CONNECT"],
     ]
@@ -139,7 +139,7 @@ def run():
                                 legal_type=row.corp_typ_cd,
                                 founding_date=row.recognition_dts,
                             )
-                        business.legal_name = row.corp_name
+                        business.legal_name = row.corp_nme
                         business.email = row.admin_email if env == "production" else "test@email.com"
                         business.ar_reminder_flag = row.send_ar_ind != "N"
                         business.state = row.corp_state
