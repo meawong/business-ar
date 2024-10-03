@@ -24,6 +24,7 @@ import requests
 import sentry_sdk
 from business_ar_api.enums.enum import AuthHeaderType
 from business_ar_api.services import AccountService
+from business_ar_api.models import ColinEventId, db
 from flask import Flask
 from sentry_sdk.integrations.logging import LoggingIntegration
 
@@ -41,6 +42,7 @@ def create_app(run_mode=os.getenv("FLASK_ENV", "production")):
     """Return a configured Flask App using the Factory method."""
     app = Flask(__name__)
     app.config.from_object(CONFIGURATION[run_mode])
+    db.init_app(app)
     # Configure Sentry
     if app.config.get("SENTRY_DSN", None):
         sentry_sdk.init(dsn=app.config.get("SENTRY_DSN"), integrations=[SENTRY_LOGGING])
@@ -221,8 +223,11 @@ def run():
                 )
                 pacific_founding_date = utc_founding_date.astimezone(pytz.timezone('America/Los_Angeles'))
                 filing["filing"]["business"]["foundingDate"] = pacific_founding_date.isoformat()
+                
+                # Logger is not working well on dev so use print here
+                print("The occurances of filing_id {}" + str(filing_id) + " in colin_event_ids table is " + str(len(ColinEventId.get_by_filing_id(filing_id))))
 
-                if identifier in corps_with_failed_filing:
+                if identifier in corps_with_failed_filing or len(ColinEventId.get_by_filing_id(filing_id)) > 0:
                     # pylint: disable=no-member; false positive
                     application.logger.debug(
                         f"Skipping filing {filing_id} for"

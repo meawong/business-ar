@@ -57,6 +57,18 @@ class _Config(object):  # pylint: disable=too-few-public-methods
     COLIN_API_URL = os.getenv("COLIN_API_URL", "") + os.getenv("COLIN_API_VERSION", "")
     COLIN_API_SVC_CLIENT_ID = os.getenv("COLIN_API_SVC_CLIENT_ID")
     COLIN_API_SVC_CLIENT_SECRET = os.getenv("COLIN_API_SVC_CLIENT_SECRET")
+    
+    # POSTGRESQL
+    DATABASE_USERNAME = os.getenv('DATABASE_USERNAME', '')
+    DATABASE_PASSWORD = os.getenv('DATABASE_PASSWORD', '')
+    DATABASE_NAME = os.getenv('DATABASE_NAME', '')
+    DATABASE_HOST = os.getenv('DATABASE_HOST', '')
+    DATABASE_PORT = os.getenv('DATABASE_PORT', '5432')
+
+    if DB_UNIX_SOCKET := os.getenv("DATABASE_UNIX_SOCKET", None):
+        SQLALCHEMY_DATABASE_URI = f"postgresql+pg8000://{DATABASE_USERNAME}:{DATABASE_PASSWORD}@/{DATABASE_NAME}?unix_sock={DB_UNIX_SOCKET}/.s.PGSQL.5432"
+    else:
+        SQLALCHEMY_DATABASE_URI = f"postgresql+pg8000://{DATABASE_USERNAME}:{DATABASE_PASSWORD}@{DATABASE_HOST}:{DATABASE_PORT}/{DATABASE_NAME}"
 
     TESTING = False
     DEBUG = False
