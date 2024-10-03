@@ -225,7 +225,8 @@ def run():
                 filing["filing"]["business"]["foundingDate"] = pacific_founding_date.isoformat()
 
                 application.logger.info(
-                    f"The occurances of filing_id {filing_id} in colin_event_ids table is {len(ColinEventId.get_by_filing_id(filing_id))}"
+                    f"The occurances of filing_id {filing_id} in colin_event_ids table \
+                    is {len(ColinEventId.get_by_filing_id(filing_id))}"
                 )
 
                 if identifier in corps_with_failed_filing or len(ColinEventId.get_by_filing_id(filing_id)) > 0:
