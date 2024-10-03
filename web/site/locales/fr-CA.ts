@@ -78,7 +78,7 @@ export default {
     previous: 'Précédent',
     openMainNav: 'Ouvrir le menu de Navigation Principal',
     closeMainNav: 'Fermer le menu de Navigation Principal',
-    loginBCSC: 'Connectez-vous avec la Carte Service CB',
+    loginBCSC: 'Se connecter pour déposer le rapport',
     createNewAccount: 'Créer un Nouveau Compte',
     createAccount: 'Créer un Compte',
     useThisAccount: {
@@ -92,9 +92,10 @@ export default {
     accept: 'Accepter',
     decline: 'Déclin',
     close: 'Fermer',
-    openHelpDocs: "Lire la Vue d'Ensemble",
+    openHelpDocs: 'Aperçu du Rapport Annuel',
     downloadReceipt: 'Télécharger le Reçu',
     downloadReport: 'Télécharger le Rapport',
+    fileAnotherReport: 'Déposer un Autre Rapport',
     info: {
       show: 'Afficher les informations',
       hide: 'Masquer les informations'
@@ -151,8 +152,8 @@ export default {
     },
     socialInsuranceNumber: "Numéro d'assurance sociale",
     taxNumber: "Numéro d'impot",
-    busName: "Nom de l'entreprise",
-    corpNum: 'Numéro de constitution',
+    busName: "Nom de l'Entreprise",
+    corpNum: 'Numéro d`Incorporation',
     busNum: "Numéro d'entreprise",
     arDate: 'Date du Rapport Annuel',
     name: 'Nom', // TODO: start review
@@ -163,7 +164,10 @@ export default {
     sameAsMailAddress: "Identique à l'Adresse Postale",
     registeredOffice: 'Siège Social',
     recordsOffice: 'Bureau des Archives',
-    office: 'Bureau'
+    office: 'Bureau',
+    reportsSequential: 'Les rapports doivent être déposés du plus ancien au plus récent.',
+    annualReportWithDate: 'Rapport Annuel De La CB {year}',
+    annualReportDueDate: 'Échéance le {date}'
   },
   links: {
     busCorpAct: {
@@ -183,7 +187,9 @@ export default {
     },
     home: {
       title: 'Accueil - Rapport Annuel de Service CB',
-      h1: 'Déposez votre rapport annuel de la Colombie-Britannique'
+      h1: 'Déposez votre rapport annuel de la Colombie-Britannique',
+      h1Date: 'Déposez votre Rapport Annuel de la CB {date}',
+      annualReports: 'Rapports Annuels' // TODO: end review
     },
     createAccount: {
       title: 'Création de Compte - Rapport Annuel de Service CB',
@@ -278,7 +284,7 @@ export default {
     },
     submitted: {
       title: 'Rapport Annuel Terminé - Rapport Annuel de Service CB',
-      h1: 'Rapport Annuel Terminé'
+      h1: 'Rapport Annuel {year} Complété'
     },
     tos: { // TODO: review tos page translations
       title: "Conditions d'Utilisation - Rapport Annuel de Service CB",
@@ -315,7 +321,9 @@ export default {
   SbcHeader: {
     title: 'Service Connect CB',
     logoBtnLabel: 'Accueil', // <img> link aria-label
-    navLabel: 'Navigation principale' // <nav> aria-label
+    navLabel: 'Navigation principale', // <nav> aria-label
+    loginBCReg: 'Se connecter aux Registres de la CB',
+    fileAnotherReport: 'Déposer un Autre Rapport'
   },
   SbcFooter: {
     navLabel: 'Liens utiles', // <nav> aria-label

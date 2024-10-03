@@ -78,7 +78,7 @@ export default {
     previous: 'Previous',
     openMainNav: 'Open Main Navigation Menu',
     closeMainNav: 'Close Main Navigation Menu',
-    loginBCSC: 'Login with BC Services Card',
+    loginBCSC: 'Log in to File Report',
     createNewAccount: 'Create New Account',
     createAccount: 'Create Account',
     useThisAccount: {
@@ -92,9 +92,10 @@ export default {
     accept: 'Accept',
     decline: 'Decline',
     close: 'Close',
-    openHelpDocs: 'Read the Overview',
+    openHelpDocs: 'Annual Report Overview',
     downloadReceipt: 'Download Receipt',
     downloadReport: 'Download Report',
+    fileAnotherReport: 'File Another Report',
     info: {
       show: 'Show information',
       hide: 'Hide information'
@@ -163,7 +164,10 @@ export default {
     sameAsMailAddress: 'Same as Mailing Address',
     registeredOffice: 'Registered Office',
     recordsOffice: 'Records Office',
-    office: 'Office'
+    office: 'Office',
+    reportsSequential: 'Reports must be filed from oldest to newest.',
+    annualReportWithDate: '{year} BC Annual Report',
+    annualReportDueDate: 'Due {date}'
   },
   links: {
     busCorpAct: {
@@ -183,7 +187,9 @@ export default {
     },
     home: {
       title: 'Home - Service BC Annual Report',
-      h1: 'File your BC Annual Report'
+      h1: 'File your BC Annual Report',
+      h1Date: 'File your {date} BC Annual Report',
+      annualReports: 'Annual Reports'
     },
     createAccount: {
       title: 'Account Creation - Service BC Annual Report',
@@ -278,7 +284,7 @@ export default {
     },
     submitted: {
       title: 'Annual Report Complete - Service BC Annual Report',
-      h1: 'Annual Report Complete'
+      h1: '{year} Annual Report Complete'
     },
     tos: {
       title: 'Terms of Use - Service BC Annual Report',
@@ -315,7 +321,9 @@ export default {
   SbcHeader: {
     title: 'Service BC Connect',
     logoBtnLabel: 'Home', // <img> link aria-label
-    navLabel: 'Main Navigation' // <nav> aria-label
+    navLabel: 'Main Navigation', // <nav> aria-label
+    loginBCReg: 'Log in to BC Registries',
+    fileAnotherReport: 'File Another Report'
   },
   SbcFooter: {
     navLabel: 'Useful Links', // <nav> aria-label

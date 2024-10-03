@@ -6,13 +6,11 @@ interface Item {
 
 const props = defineProps<{
   items: Item[]
-  breakValue: 'sm' | 'md' | 'lg'
-  isSelectingFiling: boolean
-  arDueDates?: Date[]
-  isAuthenticated: boolean | undefined
+  lastARCompletedYear: number
+  nextARYear: number | null
+  arDueDates: Date[]
 }>()
-
-const emit = defineEmits(['login'])
+const emit = defineEmits(['fileNextReport'])
 
 const filteredItems = computed(() => {
   return props.items.filter(item => item.value !== null)
@@ -22,15 +20,12 @@ const isOverdue = (date: Date) => {
   const today = new Date()
   return date < today
 }
-
-const isMoreReports = () => {
-  return props.arDueDates && props.arDueDates.length > 0
-}
 </script>
+
 <template>
   <div class="w-full text-left">
-    <h1 v-if="props.isSelectingFiling && isMoreReports()" class="mb-5 text-2xl font-bold">
-      {{ $t('SbcHeader.loginBCReg') }}
+    <h1 class="mb-5 text-2xl font-bold">
+      {{ $t('SbcHeader.fileAnotherReport') }}
     </h1>
 
     <!-- Business Info -->
@@ -46,17 +41,16 @@ const isMoreReports = () => {
         </tr>
       </tbody>
     </table>
+    <hr class="my-4 border-t border-gray-300">
+    <h1 class="text-xl font-bold text-bcGovColor-darkGray">
+      {{ $t('page.home.annualReports') }}
+    </h1>
+    <p class="mb-5 mt-1 text-sm text-bcGovColor-midGray">
+      {{ $t('labels.reportsSequential') }}
+    </p>
 
-    <!-- Login Screen when a valid Nano ID has been entered -->
-    <div v-if="props.isSelectingFiling && isMoreReports()">
-      <hr class="my-4 border-t border-gray-300">
-      <h1 class="text-xl font-bold text-bcGovColor-darkGray">
-        {{ $t('page.home.annualReports') }}
-      </h1>
-      <p class="mb-5 mt-1 text-sm text-bcGovColor-midGray">
-        {{ $t('labels.reportsSequential') }}
-      </p>
-      <!-- display all report dates until up to date with option to login -->
+    <!-- Display all report dates until up to date -->
+    <template v-if="props.lastARCompletedYear && props.nextARYear">
       <div v-for="(date, index) in arDueDates" :key="index" class="mb-4">
         <div
           class="flex flex-col items-center rounded-sm border p-4 md:flex-row md:justify-between"
@@ -64,7 +58,7 @@ const isMoreReports = () => {
             ? 'border-red-500 bg-red-100'
             : 'border-bcGovColor-midGray bg-gray-100'"
         >
-          <!-- First column: Date of report and red alert icon if overdue -->
+          <!-- First column: Red Alert Icon and date of report -->
           <div class="mb-4 flex w-full items-center md:mb-0 md:w-auto">
             <UAlert
               v-if="isOverdue(date)"
@@ -86,19 +80,19 @@ const isMoreReports = () => {
               </p>
             </div>
           </div>
-          <!-- Second column: Login Button (centered and full-width on small screens) -->
+
+          <!-- Second column: File another Button (centered and full-width on small screens) -->
           <div class="flex w-full items-center justify-center md:w-auto">
             <UButton
-              v-if="!isAuthenticated"
-              :label="$t('btn.loginBCSC')"
+              :label="$t('btn.fileAnotherReport')"
               :disabled="index !== 0"
-              class="flex w-full items-center justify-center text-center md:w-auto"
-              @click="emit('login')"
+              class="flex w-full items-center justify-center text-center font-bold md:w-auto"
+              @click="emit('fileNextReport')"
             />
           </div>
         </div>
       </div>
       <SbcHelpTrigger />
-    </div>
+    </template>
   </div>
 </template>
