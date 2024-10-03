@@ -224,9 +224,9 @@ def run():
                 pacific_founding_date = utc_founding_date.astimezone(pytz.timezone('America/Los_Angeles'))
                 filing["filing"]["business"]["foundingDate"] = pacific_founding_date.isoformat()
 
-                # Logger is not working well on dev so use print here
-                print("The occurances of filing_id {}" + str(filing_id)
-                      + " in colin_event_ids table is " + str(len(ColinEventId.get_by_filing_id(filing_id))))
+                application.logger.info(
+                    f"The occurances of filing_id {filing_id} in colin_event_ids table is {len(ColinEventId.get_by_filing_id(filing_id))}"
+                )
 
                 if identifier in corps_with_failed_filing or len(ColinEventId.get_by_filing_id(filing_id)) > 0:
                     # pylint: disable=no-member; false positive
