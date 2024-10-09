@@ -87,7 +87,7 @@ USER web
   
 # The following stage is only for production:
 FROM development_build AS production_build
-COPY --chown=web:web . /code
-COPY --chown=web:web ./run.sh /code/run.sh
-  
+
+# ENV PYTHONPATH=/opt/app-root/src
+
 CMD [ "/bin/sh", "/code/run.sh" ]
