@@ -76,12 +76,7 @@ class ReportService:
 
         if response.status_code != HTTPStatus.OK:
             return jsonify(message=str(response.content)), response.status_code
-
-        return current_app.response_class(
-            response=response.content,
-            status=response.status_code,
-            mimetype="application/pdf",
-        )
+        return response.content, response.status_code
 
     def _get_report_filename(self):
         filing_date = str(self._filing.filing_date)[:19]

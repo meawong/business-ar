@@ -19,7 +19,7 @@ describe('<BusinessEmail />', () => {
     useAccountStore().currentAccount = {
       ...mockNewAccount,
       // @ts-ignore
-      mailingAddress: [{ email: 'account@email.com' }]
+      contacts: [{ email: 'account@email.com' }]
     }
     useBusinessStore().currentBusiness = mockedBusinessFull.business
     const component = await renderSuspended(BusinessEmail)

@@ -1,6 +1,6 @@
 <script setup lang="ts">
-const index1 = inject('sbc-bar-index1')
-const index2 = inject('sbc-bar-index2')
+const index1 = inject<Record<string, any>>('sbc-bar-index1')
+const index2 = inject<Record<string, any>>('sbc-bar-index2')
 const { t } = useI18n()
 const keycloak = useKeycloak()
 const { $keycloak } = useNuxtApp()
@@ -142,8 +142,8 @@ if (import.meta.client) {
           break-value="sm"
           :items="[
             { label: $t('labels.busName'), value: busStore.businessNano.legalName },
-            { label: $t('labels.corpNum'), value: `${busStore.businessNano.legalType}${busStore.businessNano.identifier.replace(/\D/g, '')}`},
-            { label: $t('labels.busNum'), value: busStore.businessNano.taxId ? `${busStore.businessNano.taxId.slice(0, 9)} ${busStore.businessNano.taxId.slice(9)}` : null },
+            { label: $t('labels.corpNum'), value: `${busStore.businessNano.legalType}${busStore.businessNano.identifier?.replace(/\D/g, '') ?? ''}` },
+            { label: $t('labels.busNum'), value: busStore.businessNano.taxId ? `${busStore.businessNano.taxId.slice(0, 9)} ${busStore.businessNano.taxId.slice(9)}` : null }
           ]"
           :is-selecting-filing="true"
           :ar-due-dates="busStore.getArDueDates()"

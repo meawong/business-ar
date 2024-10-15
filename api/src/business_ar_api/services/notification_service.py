@@ -160,8 +160,11 @@ class NotificationService:
                 attach_order += 1
             report_service = ReportService()
             filing_type = "annualReport"
-            filing_pdf = report_service.generate_report(filing.id, filing_type)
-            filing_pdf_encoded = base64.b64encode(filing_pdf.get_data())
+            filing_pdf, status_code = report_service.generate_report(filing.id, filing_type)
+            if status_code != HTTPStatus.OK:
+                current_app.logger.error(f'Failed to generate pdfs for email receipt')
+                return []
+            filing_pdf_encoded = base64.b64encode(filing_pdf)
             file_name = filing_type[0].upper() + " ".join(
                 re.findall("[a-zA-Z][^A-Z]*", filing_type[1:])
             )
