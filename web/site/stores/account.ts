@@ -76,8 +76,17 @@ export const useAccountStore = defineStore('bar-sbc-account-store', () => {
         'An error occurred while creating a new account.'
       )
 
+      if (!response.contacts || response.contacts.length === 0) {
+        response.contacts = [{
+          email: data.contact.email,
+          phone: data.contact.phone,
+          phoneExtension: data.contact.phoneExt
+        }]
+      }
       currentAccount.value = response
       userAccounts.value.push(response)
+
+      await getUserAccounts()
 
       if (callback) {
         callback()
@@ -87,9 +96,11 @@ export const useAccountStore = defineStore('bar-sbc-account-store', () => {
         severity: 'error',
         category: AlertCategory.CREATE_ACCOUNT
       })
+      console.error('Error creating new account:', error)
     } finally {
       loading.value = false
     }
+    console.log('Account created:', currentAccount.value)
   }
 
   async function isAccountNameAvailable (name: string): Promise<boolean> {
