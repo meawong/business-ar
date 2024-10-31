@@ -13,7 +13,7 @@ serialPipeline:
    deployParameters:
    - values:
       deploy-env: "development"
-      deploy-project-id: "bcrbk9-dev"
+      deploy-project-id: "a083gt-dev"
       service-name: "business-ar-pay-dev"
       container-name: "business-ar-pay-dev"
       cloudsql-instances: "a083gt-dev:northamerica-northeast1:businesses-db-dev"
