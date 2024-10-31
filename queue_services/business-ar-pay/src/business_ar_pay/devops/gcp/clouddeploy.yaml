@@ -25,7 +25,7 @@ serialPipeline:
       verify: false
    deployParameters:
    - values:
-      deploy-env: "test"
+      deploy-env: "development"
       deploy-project-id: "a083gt-test"
       service-name: "business-ar-pay-test"
       container-name: "business-ar-pay-test"
