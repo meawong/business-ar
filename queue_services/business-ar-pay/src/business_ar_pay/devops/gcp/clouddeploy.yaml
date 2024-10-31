@@ -1,0 +1,48 @@
+apiVersion: deploy.cloud.google.com/v1
+kind: DeliveryPipeline
+metadata:
+ name: business-ar-pay-pipeline
+description: Deployment pipeline
+serialPipeline:
+ stages:
+ - targetId: a083gt-dev
+   profiles: [dev]
+   strategy:
+    standard:
+      verify: false
+   deployParameters:
+   - values:
+      deploy-env: "development"
+      deploy-project-id: "bcrbk9-dev"
+      service-name: "business-ar-pay-dev"
+      container-name: "business-ar-pay-dev"
+      cloudsql-instances: "a083gt-dev:northamerica-northeast1:businesses-db-dev"
+      service-account: "sa-job@a083gt-dev.iam.gserviceaccount.com"
+ - targetId: a083gt-test
+   profiles: [test]
+   strategy:
+    standard:
+      verify: false
+   deployParameters:
+   - values:
+      deploy-env: "test"
+      deploy-project-id: "a083gt-test"
+      service-name: "business-ar-pay-test"
+      container-name: "business-ar-pay-test"
+      cloudsql-instances: "a083gt-test:northamerica-northeast1:businesses-db-test"
+      service-account: "sa-job@a083gt-test.iam.gserviceaccount.com"
+ - targetId: a083gt-prod
+   profiles: [prod]
+   strategy:
+    standard:
+      verify: false
+   deployParameters:
+   - values:
+      deploy-env: "production"
+      deploy-project-id: "a083gt-prod"
+      service-name: "business-ar-pay-prod"
+      container-name: "business-ar-pay-prod"
+      cloudsql-instances: "a083gt-prod:northamerica-northeast1:businesses-db-prod"
+      service-account: "sa-job@a083gt-prod.iam.gserviceaccount.com"
+      max-scale: "10"
+      container-concurrency: "20"

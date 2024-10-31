@@ -1,0 +1,20 @@
+name: Business AR Pay CI
+
+on:
+  pull_request:
+    paths:
+      - "queue_services/business-ar-pay/**"
+  workflow_dispatch:
+
+defaults:
+  run:
+    shell: bash
+    working-directory: ./queue_services/business-ar-pay
+
+jobs:
+  business-ar-PAY-CI:
+    uses: bcgov/bcregistry-sre/.github/workflows/backend-ci.yaml@main
+    with:
+      app_name: "business-ar-pay"
+      working_directory: "./queue_services/business-ar-pay"
+      codecov_flag: "business-ar-pay"
