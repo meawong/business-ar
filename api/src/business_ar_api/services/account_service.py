@@ -240,14 +240,24 @@ class AccountService:
     @user_context
     def affiliate_entity_to_account(cls, account_id: int, business_identifier: str, **kwargs):
         """Affiliate an entity to an account."""
-        user: UserContext = kwargs["user_context"]
+        # Get the service account token
+        client_id = current_app.config.get("BAR_SCV_CLIENT_ID")
+        client_secret = current_app.config.get("BAR_SCV_CLIENT_SECRET")
+        service_token = cls.get_service_client_token(client_id, client_secret)
+
+        if not service_token:
+            raise ExternalServiceException(
+                error="Unable to obtain service account token",
+                status_code=HTTPStatus.INTERNAL_SERVER_ERROR,
+            )
+
         endpoint = f"{current_app.config.get('AUTH_API_URL')}/orgs/{account_id}/affiliations"
         affiliation_payload = {
             "businessIdentifier": business_identifier,
             "passCode": "",
         }
         new_entity_details = RestService.post(
-            data=affiliation_payload, endpoint=endpoint, token=user.bearer_token
+            data=affiliation_payload, endpoint=endpoint, token=service_token
         ).json()
         return new_entity_details
 
