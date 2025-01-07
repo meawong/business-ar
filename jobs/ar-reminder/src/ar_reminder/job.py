@@ -32,8 +32,7 @@ from business_ar_api.services.rest_service import RestService
 from ar_reminder.config import CONFIGURATION
 from ar_reminder.utils.logging import setup_logging
 
-setup_logging(os.path.join(os.path.abspath(
-    os.path.dirname(__file__)), "logging.conf"))
+setup_logging("logging.conf")
 
 CONTENT_TYPE_JSON = {"Content-Type": "application/json"}
 TIMEOUT = 20

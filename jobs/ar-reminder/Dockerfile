@@ -65,9 +65,6 @@ RUN groupadd -g "${GID}" -r web \
 # Copy only requirements, to cache them in docker layer
 COPY --chown=web:web ./poetry.lock ./pyproject.toml /code/
 
-COPY --chown=web:web ./src /code/src
-COPY --chown=web:web ./README.md /code
-
 # Copy the run.sh script from jobs/ar-reminder/ to the /code directory
 # Ensure run.sh has execute permissions
 COPY --chown=web:web ./run.sh /code/run.sh
@@ -83,8 +80,10 @@ RUN --mount=type=cache,target="$POETRY_CACHE_DIR" \
     $(if [ -z ${APP_ENV+x} ] | [ "$APP_ENV" = 'production' ]; then echo '--only main'; fi) \
     --no-interaction --no-ansi
 
-# In development_build stage
-COPY --chown=web:web . /code
+COPY --chown=web:web ./src /code/src
+COPY --chown=web:web ./README.md /code
+COPY --chown=web:web ./logging.conf /code
+
 RUN chmod -R 755 /code
 
 USER web
