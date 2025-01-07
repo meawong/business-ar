@@ -91,6 +91,6 @@ USER web
 # The following stage is only for production:
 FROM development_build AS production_build
 
-# ENV PYTHONPATH=/opt/app-root/src
+ENV PYTHONPATH=/code/src
 
 CMD [ "/bin/sh", "/code/run.sh" ]
