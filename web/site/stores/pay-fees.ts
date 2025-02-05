@@ -1,9 +1,18 @@
 import { v4 as UUIDv4 } from 'uuid'
+import { useI18n } from 'vue-i18n'
 import payApi from '~/services/pay-api'
+import { ConnectPaymentMethod } from '~/enums/connect-payment-method'
+import type { ConnectPayAccount } from '~/interfaces/connect-pay-account'
+
 export const usePayFeesStore = defineStore('bar-sbc-pay-fees', () => {
   const fees: Ref<PayFeesWidgetItem[]> = ref([])
   const folioNumber = ref('')
   const feeInfo: Ref<[FeeData, FeeInfo][]> = ref([])
+  const PAD_PENDING_STATES = ['PENDING', 'PENDING_PAD_ACTIVATION']
+  const userPaymentAccount = ref<ConnectPayAccount>({} as ConnectPayAccount)
+  const userSelectedPaymentMethod = ref<ConnectPaymentMethod>(ConnectPaymentMethod.DIRECT_PAY)
+  const allowAlternatePaymentMethod = ref<boolean>(false)
+  const allowedPaymentMethods = ref<{ label: string, value: ConnectPaymentMethod }[]>([])
 
   function addFee (newFee: FeeInfo) {
     const fee = fees.value.find((fee: PayFeesWidgetItem) => // check if fee already exists
@@ -18,7 +27,6 @@ export const usePayFeesStore = defineStore('bar-sbc-pay-fees', () => {
       }
     } else { // validate fee doesnt have null values
       if (!newFee || newFee.total == null || newFee.filingFees == null || newFee.filingTypeCode == null) {
-        console.error('Trying to add INVALID FEE; Fee is missing details. Fee:', newFee)
         return
       }
       fees.value.push({ ...newFee, quantity: 1, uiUuid: UUIDv4() }) // add fee if valid
@@ -88,10 +96,50 @@ export const usePayFeesStore = defineStore('bar-sbc-pay-fees', () => {
     }
   }
 
+  const $resetAlternatePayOptions = () => {
+    userPaymentAccount.value = {} as ConnectPayAccount
+    userSelectedPaymentMethod.value = ConnectPaymentMethod.DIRECT_PAY
+    allowAlternatePaymentMethod.value = false
+    allowedPaymentMethods.value = []
+  }
+
   function $reset () {
     fees.value = []
     folioNumber.value = ''
     feeInfo.value = []
+    $resetAlternatePayOptions()
+  }
+
+  const initAlternatePaymentMethod = async () => {
+    $resetAlternatePayOptions()
+    const { t } = useI18n()
+    try {
+      const accountId = useAccountStore().currentAccount.id.toString()
+      const res = await payApi.getAccount(accountId)
+      userPaymentAccount.value = res
+
+      if (res.paymentMethod) {
+        const accountNum = res.cfsAccount?.bankAccountNumber ?? ''
+        allowedPaymentMethods.value.push({
+          label: t(`paymentMethod.${res.paymentMethod}`, { account: accountNum }),
+          value: res.paymentMethod
+        })
+
+        if (res.paymentMethod !== ConnectPaymentMethod.DIRECT_PAY) {
+          allowedPaymentMethods.value.push({
+            label: t(`paymentMethod.${ConnectPaymentMethod.DIRECT_PAY}`),
+            value: ConnectPaymentMethod.DIRECT_PAY
+          })
+
+          if (PAD_PENDING_STATES.includes(res.cfsAccount?.status)) {
+            userSelectedPaymentMethod.value = ConnectPaymentMethod.DIRECT_PAY
+          }
+        }
+      }
+      allowAlternatePaymentMethod.value = true
+    } catch (e) {
+      console.error('Error initializing user payment account', e)
+    }
   }
 
   return {
@@ -103,7 +151,11 @@ export const usePayFeesStore = defineStore('bar-sbc-pay-fees', () => {
     removeFee,
     getFeeInfo,
     addPayFees,
-    $reset
+    $reset,
+    userPaymentAccount,
+    userSelectedPaymentMethod,
+    allowedPaymentMethods,
+    allowAlternatePaymentMethod,
+    initAlternatePaymentMethod
   }
-}
-)
+})
