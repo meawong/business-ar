@@ -20,7 +20,7 @@
 #    may be used to endorse or promote products derived from this software
 #    without specific prior written permission.
 #
-# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS “AS IS”
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
 # AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
 # THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
 # ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
@@ -218,10 +218,15 @@ class NotificationService:
     def _send_email(email: dict, token: str):
         """Send the email."""
         if not email or "recipients" not in email or "content" not in email or "body" not in email["content"]:
+            current_app.logger.error("Email content invalid: %s", email)
             raise BusinessException("Unsuccessful sending email - required email object(s) is empty.")
 
         if not email["recipients"] or not email["content"] or not email["content"]["body"]:
+            current_app.logger.error("Email recipients or body missing: %s", email)
             raise BusinessException("Unsuccessful sending email - required email object(s) is missing. ")
+
+        # Log before sending email
+        current_app.logger.info(f'Attempting to send email to {email.get("recipients")}')
 
         resp = requests.post(
             f'{current_app.config.get("NOTIFY_API_URL")}',
@@ -232,7 +237,16 @@ class NotificationService:
             },
         )
         if resp.status_code != HTTPStatus.OK:
+            # Log failure
+            current_app.logger.error(
+                f'Failed to send email. Status Code: {resp.status_code}, Response: {resp.text}'
+            )
             raise BusinessException("Unsuccessful response when sending email.", "", resp.status_code)
+
+        # Log success
+        current_app.logger.info(
+            f'Successfully sent email to {email.get("recipients")}. Response status: {resp.status_code}'
+        )
 
     @staticmethod
     def _get_tmz_date_time_string(filing_date):
