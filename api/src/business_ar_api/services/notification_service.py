@@ -242,11 +242,11 @@ class NotificationService:
                 f'Failed to send email. Status Code: {resp.status_code}, Response: {resp.text}'
             )
             raise BusinessException("Unsuccessful response when sending email.", "", resp.status_code)
-        else:
-            # Log success
-            current_app.logger.info(
-                f'Successfully sent email to {email.get("recipients")}. Response status: {resp.status_code}'
-            )
+
+        # Log success
+        current_app.logger.info(
+            f'Successfully sent email to {email.get("recipients")}. Response status: {resp.status_code}'
+        )
 
     @staticmethod
     def _get_tmz_date_time_string(filing_date):
