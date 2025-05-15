@@ -37,8 +37,6 @@ This module is the API for the Legal Entity system.
 """
 import os
 
-import sentry_sdk
-from sentry_sdk.integrations.flask import FlaskIntegration
 from flask import Flask
 from flask_cors import CORS
 
@@ -55,15 +53,6 @@ def create_app(environment: Config = Production, **kwargs) -> Flask:
     """Return a configured Flask App using the Factory method."""
     app = Flask(__name__)
     app.config.from_object(environment)
-
-    # Configure Sentry
-    if dsn := app.config.get("SENTRY_DSN", None):
-        sentry_sdk.init(
-            dsn=dsn,
-            integrations=[FlaskIntegration()],
-            release=f"legal-api@{get_run_version()}",
-            send_default_pii=False,
-        )
 
     CORS(app, resources="*")
     db.init_app(app)

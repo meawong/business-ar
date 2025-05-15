@@ -37,10 +37,8 @@ This module applied payments against Filings and updates the filing status to PA
 """
 from __future__ import annotations
 
-import sentry_sdk
 from business_ar_api import db
 from flask import Flask
-from sentry_sdk.integrations.flask import FlaskIntegration
 
 from .config import Config, ProdConfig
 from .resources import register_endpoints
@@ -51,14 +49,6 @@ def create_app(environment: Config = ProdConfig, **kwargs) -> Flask:
     """Return a configured Flask App using the Factory method."""
     app = Flask(__name__)
     app.config.from_object(environment)
-
-    # Configure Sentry
-    if dsn := app.config.get("SENTRY_DSN", None):
-        sentry_sdk.init(
-            dsn=dsn,
-            integrations=[FlaskIntegration()],
-            send_default_pii=False,
-        )
 
     db.init_app(app)
     gcp_queue.init_app(app)
