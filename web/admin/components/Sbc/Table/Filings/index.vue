@@ -15,11 +15,12 @@
 // }>()
 
 // Basic interface for Office to resolve linter error
-interface Office {
-  deliveryAddress?: any; // Replace 'any' with actual type if known
-  mailingAddress?: any;  // Replace 'any' with actual type if known
-  // Add other properties of Office if known
-}
+// Since props is commented out, Office is also unused for now.
+// interface Office {
+//   deliveryAddress?: any; // Replace 'any' with actual type if known
+//   mailingAddress?: any; // Replace 'any' with actual type if known
+//   // Add other properties of Office if known
+// }
 
 const columns = [{
   key: 'name',
