@@ -1,26 +1,12 @@
 <script setup lang="ts">
-// const { t } = useI18n() // 't' is unused
+const { t } = useI18n()
 
-// define props type for clarity, even if props itself is not directly used in <script>
-// if props were used, it would be: const props = defineProps<{...}>()
-// Since 'props' is unused as per the linter error, the defineProps call itself can be removed
-// if no props are actually being passed or used by this component.
-// However, the original code had a props definition, so we'll comment it out
-// in case it's intended for future use or indirect usage.
-// const props = defineProps<{
-//   offices?: {
-//     recordsOffice: Office
-//     registeredOffice: Office
-//   } | undefined
-// }>()
-
-// Basic interface for Office to resolve linter error
-// Since props is commented out, Office is also unused for now.
-// interface Office {
-//   deliveryAddress?: any; // Replace 'any' with actual type if known
-//   mailingAddress?: any; // Replace 'any' with actual type if known
-//   // Add other properties of Office if known
-// }
+const props = defineProps<{
+  offices?: {
+    recordsOffice: Office
+    registeredOffice: Office
+  } | undefined
+}>()
 
 const columns = [{
   key: 'name',
