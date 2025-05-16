@@ -51,8 +51,6 @@ class _Config:  # pylint: disable=too-few-public-methods
 
     PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
 
-    SENTRY_DSN = os.getenv("SENTRY_DSN", "")
-
     DEPLOYMENT_ENVIRONMENT = os.getenv("DEPLOYMENT_ENV", "development")
 
     DB_USER = os.getenv("DATABASE_USERNAME", "")

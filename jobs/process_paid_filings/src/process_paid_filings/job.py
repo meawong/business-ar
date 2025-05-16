@@ -22,19 +22,16 @@ from datetime import timezone
 import pytz
 
 import requests
-import sentry_sdk
 from business_ar_api.enums.enum import AuthHeaderType
 from business_ar_api.services import AccountService
 from business_ar_api.models import ColinEventId, db
 from flask import Flask
-from sentry_sdk.integrations.logging import LoggingIntegration
 
 from .config import CONFIGURATION
 from .utils.logging import setup_logging
 
 setup_logging("logging.conf")
 
-SENTRY_LOGGING = LoggingIntegration(event_level=logging.ERROR)  # send errors as events
 CONTENT_TYPE_JSON = {"Content-Type": "application/json"}
 TIMEOUT = 300
 
@@ -44,9 +41,6 @@ def create_app(run_mode=os.getenv("FLASK_ENV", "production")):
     app = Flask(__name__)
     app.config.from_object(CONFIGURATION[run_mode])
     db.init_app(app)
-    # Configure Sentry
-    if app.config.get("SENTRY_DSN", None):
-        sentry_sdk.init(dsn=app.config.get("SENTRY_DSN"), integrations=[SENTRY_LOGGING])
 
     register_shellcontext(app)
 

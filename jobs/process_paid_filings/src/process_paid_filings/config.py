@@ -46,8 +46,6 @@ class _Config(object):  # pylint: disable=too-few-public-methods
 
     PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
 
-    SENTRY_DSN = os.getenv("SENTRY_DSN", "")
-
     AUTH_SVC_URL = os.getenv("AUTH_SVC_URL")
 
     BUSINESS_AR_API_URL = os.getenv("BUSINESS_AR_API_URL", "") + os.getenv(
