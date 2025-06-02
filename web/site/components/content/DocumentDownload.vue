@@ -13,7 +13,7 @@ const { t } = useI18n()
       <UTooltip
         v-for="doc in arStore.arFiling.filing.documents"
         :key="doc.name"
-        :text="t('page.submitted.docEmailNotice')"
+        :text="doc.name === 'Receipt' ? t('page.submitted.receiptEmailNotice') : t('page.submitted.docEmailNotice')"
       >
         <UButton
           size="lg"

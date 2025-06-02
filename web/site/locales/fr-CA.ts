@@ -293,7 +293,8 @@ export default {
     submitted: {
       title: 'Rapport annuel complété - Rapport annuel de Service BC',
       h1: 'Rapport annuel {year} complété',
-      docEmailNotice: 'Une copie de ce document sera également envoyée par courriel une fois le traitement du paiement terminé.'
+      docEmailNotice: 'Une copie de ce document sera également envoyée par courriel une fois le traitement du paiement terminé.',
+      receiptEmailNotice: 'Le rapport annuel sera envoyé par courriel une fois le traitement du paiement terminé.'
     },
     tos: { // TODO: review tos page translations
       title: "Conditions d'Utilisation - Rapport Annuel de Service CB",
