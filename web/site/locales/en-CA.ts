@@ -295,7 +295,8 @@ export default {
     submitted: {
       title: 'Annual Report Complete - Service BC Annual Report',
       h1: '{year} Annual Report Complete',
-      docEmailNotice: 'A copy of this document will also be emailed once payment processing is complete.'
+      docEmailNotice: 'A copy of this document will also be emailed once payment processing is complete.',
+      receiptEmailNotice: 'Annual Report will be emailed once payment processing is complete.'
     },
     tos: {
       title: 'Terms of Use - Service BC Annual Report',
