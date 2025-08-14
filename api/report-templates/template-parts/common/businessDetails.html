@@ -9,7 +9,6 @@
                 <div class="bold pt-2">Filed Date and Time:</div>
                 <div class="bold pt-2">Recognition Date and Time:</div>
                 <div class="bold pt-2">AGM Date:</div>
-                <div class="bold pt-2">Retrieved Date and Time:</div>
             </td>
             <td>
                 <div>{{business.identifier}}</div>
@@ -25,7 +24,6 @@
                         No AGM
                     {% endif %}
                 </div>
-                <div class="pt-2">{{report_date_time}}</div>
             </td>
             <td class="business-details-registar-td">
                 <div class="registar-certify-section">
@@ -42,6 +40,10 @@
         </tr>
     </table>
 </div>
+
+<!-- Retrieved Date and Time: -->
+<div class="retrieved-date-time mt-2">Document retrieved on {{report_date_time}}</div>
+
 <!-- this block is hidden but is needed for the footer: -->
 <div class="filing-identifier">
     Filing #{{header.id}}
